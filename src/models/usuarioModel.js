@@ -1,4 +1,4 @@
-var database = require("../Database/frigologconfig")
+var database = require("../database/config")
 
 function autenticar(email, senha){
 
