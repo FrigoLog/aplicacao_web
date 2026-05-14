@@ -125,14 +125,38 @@
     function logar() {
 
         alerta_msg.innerHTML = "";
-        let emailVar = ipt_email.value;
-        let senhaVar = ipt_senha.value;
+        let emailInserido = ipt_email.value;
+        let senhaInserido = ipt_senha.value;
 
         if(emailVar == "" || senhaVar == ""){
             alerta_msg.innerHTML = "Email ou senha inválidos.";
         }
         
-        fetch("usuarios/autenticar", {})
+        fetch("usuarios/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailInserido,
+                senhaServer: senhaInserido
+            })
+        }).then(function (resposta) {
+            console.log("Estou no THEN da Function logar()!");
+            
+            if(resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+                    sessionStorage
+                    
+                    
+                })
+                
+            }
+        })
     }
     function toggleSenha() {
         const campo = document.getElementById('ipt_senha');
