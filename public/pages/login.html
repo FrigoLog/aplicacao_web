@@ -123,27 +123,16 @@
     let usuarios_senha = ["bruno@123", "matheus@123"]
 
     function logar() {
-        let email_digitado = ipt_email.value;
-        let senha_digitada = ipt_senha.value;
-
-        let usuarioExiste = false;
-        let usuarioIndex = -1;
 
         alerta_msg.innerHTML = "";
+        let emailVar = ipt_email.value;
+        let senhaVar = ipt_senha.value;
 
-        for (let i = 0; i < usuarios_email.length; i++) {
-            if (usuarios_email[i] == email_digitado) {
-                usuarioExiste = true;
-                usuarioIndex = i;
-                break;
-            }
-        }
-
-        if (usuarioExiste && usuarios_senha[usuarioIndex] == senha_digitada) {
-            window.location.href = "./dashboard/dashboard.html";
-        } else {
+        if(emailVar == "" || senhaVar == ""){
             alerta_msg.innerHTML = "Email ou senha inválidos.";
         }
+        
+        fetch("usuarios/autenticar", {})
     }
     function toggleSenha() {
         const campo = document.getElementById('ipt_senha');
