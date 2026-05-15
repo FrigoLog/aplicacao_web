@@ -102,6 +102,8 @@
                     style="cursor:pointer"></i>
             </div>
 
+            <div id="erro"></div>
+
             <button onclick="cadastrar()" class="btn-login">
                 Criar conta
             </button>
@@ -158,6 +160,35 @@
 
 
     <script>
+
+        let listaEmpresa = []; 
+
+        function cadastrar() {
+            var nomeInserido = ipt_nome.value;
+            var emailInserido = ipt_email.value;
+            var senhaInserida = ipt_senha.value;
+            var confirmacaoSenha = ipt_confirmar;
+            var CodigoEmpresa = ipt_codigo.value;
+            var idEmpresaVincular
+
+            if(
+                nomeInserido == "" ||
+                emailInserido == "" ||
+                senhaInserida == "" ||
+                confirmacaoSenha == "" ||
+                CodigoEmpresa == ""
+            ){
+                erro.innerHTML = "Há Campos em branco por favor Insira os dados corretamente";
+
+                finalizarAguardar();
+                return false;
+            }
+
+            for(let i = 0; i < listaEmpresa.length; i++) {
+                if(listaEmpresa[i].CodigoEmpresa == )
+            }
+        }
+
         function toggleSenha(id, icon) {
             const campo = document.getElementById(id);
 
