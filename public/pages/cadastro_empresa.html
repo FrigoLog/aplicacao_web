@@ -148,6 +148,20 @@
             }
         }
 
+        function gerarCodigoCadastro() {
+    const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let codigo = "FRG";
+
+    for (let i = 0; i < 5; i++) {
+        const indice = Math.floor(Math.random() * caracteres.length);
+        codigo += caracteres[indice];
+    }
+console.log(codigo);
+
+    return codigo;
+}
+
         function cadastrar() {
             alert("Cadastro em desenvolvimento.");
         }
