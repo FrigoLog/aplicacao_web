@@ -5,7 +5,7 @@ function autenticar(email, senha){
     console.log("ACESSEI O USUARIO MODEL");
     
     var instrucaoSql = `
-    SELECT id_usuario, nome, email, fk_tipo_usuario, fk_empresa from usuario where email = '${email}' and senha = '${senha}'
+    SELECT id_usuario, nome, email, fk_tipo_usuario, fk_empresa from usuario where email = '${email}' and senha =  SHA2('${senha}',224)
     `;
     console.log("Executando a instruçãoSQL");
     return database.executar(instrucaoSql);
@@ -15,7 +15,7 @@ function autenticar(email, senha){
 function cadastrar(nome, email, fk_empresa, senha){
     console.log("Acessei o usuario Model");
 
-    var instrucaoSql = `insert into usuario(nome, email, fk_empresa, senha) values ('${nome}', '${email}', '${fk_empresa}', '${senha}')
+    var instrucaoSql = `insert into usuario(nome, email, fk_empresa, senha) values ('${nome}', '${email}', '${fk_empresa}', SHA2('${senha}',224))
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
