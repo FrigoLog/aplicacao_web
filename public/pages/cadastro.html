@@ -170,7 +170,7 @@
             var nomeInserido = ipt_nome.value;
             var emailInserido = ipt_email.value;
             var senhaInserida = ipt_senha.value;
-            var confirmacaoSenha = ipt_confirmar;
+            var confirmacaoSenha = ipt_confirmar.value;
             var CodigoEmpresa = ipt_codigo.value;
             var idEmpresaVincular
 
@@ -183,7 +183,7 @@
             ){
                 erro.innerHTML = "Há Campos em branco por favor Insira os dados corretamente";
 
-                finalizarAguardar();
+                
                 return false;
             } else {
                 setInterval(sumirMensagem, 5000);
@@ -196,7 +196,7 @@
                     break;
                 } else {
                     erro.innerHTML = "(Codigo de empresa inválido!)";
-                    finalizarAguardar();
+                    
                 }
             }
 
@@ -206,6 +206,7 @@
                     "Content-Type" : "application/json",
                 },
                 body: JSON.stringify({
+                    
                     nomeServer: nomeInserido,
                     emailServer: emailInserido,
                     senhaServer: senhaInserida,
@@ -224,14 +225,14 @@
                         }, "2000");
 
                         limparFormulario();
-                        finalizarAguardar();
+                        
                     }   else {
                         throw "Houve um erro ao tentar realizar o cadastro!";
                     }  
                 })
                 .catch(function (resposta) {
                     console.log(`#ERRO: ${resposta}`);
-                    finalizarAguardar();
+                   
                 });
 
             return false;
