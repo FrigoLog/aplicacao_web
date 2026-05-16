@@ -735,3 +735,9 @@ footer .title-logo {
     color: #ef4444;
 }
 
+.codigo_posicao {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
