@@ -75,6 +75,8 @@
             <label for="ipt_codigo" class="label-form">
                 Código da empresa:
             </label>
+            <div class="input-box codigo_posicao" id="codigo_div">
+            </div>
 
             <!-- <div class="input-box"> 
                 <i class="bx bx-buildings icone-esquerda"></i>
@@ -148,9 +150,28 @@
             }
         }
 
+       /* function gerarCodigoCadastro() {*/
+    
+
         function cadastrar() {
+
+            const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let codigo = "FRG";
+
+    for (let i = 0; i < 5; i++) {
+        const indice = Math.floor(Math.random() * caracteres.length);
+        codigo += caracteres[indice];
+    }
+console.log(codigo);
+
+codigo_div.innerHTML = `${codigo}`
+
+    return codigo;
+
             alert("Cadastro em desenvolvimento.");
-        }
+            }
+        
     </script>
 </body>
 
