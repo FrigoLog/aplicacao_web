@@ -7,6 +7,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../assets/css/style.css">
     <title>FrigoLog - Cadastro</title>
+    <script src="../js/sessao.js"></script>
 </head>
 
 <body>
@@ -102,7 +103,9 @@
                     style="cursor:pointer"></i>
             </div>
 
-            <div id="erro"></div>
+            <div id="erro" class="alerta-login"></div>
+
+            <div id="sucesso"></div>
 
             <button onclick="cadastrar()" class="btn-login">
                 Criar conta
@@ -167,7 +170,7 @@
             var nomeInserido = ipt_nome.value;
             var emailInserido = ipt_email.value;
             var senhaInserida = ipt_senha.value;
-            var confirmacaoSenha = ipt_confirmar;
+            var confirmacaoSenha = ipt_confirmar.value;
             var CodigoEmpresa = ipt_codigo.value;
             var idEmpresaVincular
 
@@ -180,13 +183,82 @@
             ){
                 erro.innerHTML = "Há Campos em branco por favor Insira os dados corretamente";
 
-                finalizarAguardar();
+                
                 return false;
+            } else {
+                setInterval(sumirMensagem, 5000);
             }
 
             for(let i = 0; i < listaEmpresa.length; i++) {
-                if(listaEmpresa[i].CodigoEmpresa == )
+                if(listaEmpresa[i].codigo_cadastro == CodigoEmpresa) {
+                    idEmpresaVincular = listaEmpresa[i].id_empresa
+                    console.log("Codigo empresa válido.");
+                    break;
+                } else {
+                    erro.innerHTML = "(Codigo de empresa inválido!)";
+                    
+                }
             }
+
+            fetch("/usuarios/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({
+                    
+                    nomeServer: nomeInserido,
+                    emailServer: emailInserido,
+                    senhaServer: senhaInserida,
+                    idEmpresaVincularServer: idEmpresaVincular
+                }),
+            })
+                .then(function (resposta) {
+                    console.log("resposta: ", resposta);
+
+                    if(resposta.ok) {
+                       sucesso.innerHTML = 
+                        "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+                        setTimeout(() => {
+                            window.location = "login.html";
+                        }, "2000");
+
+                        limparFormulario();
+                        
+                    }   else {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }  
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                   
+                });
+
+            return false;
+        }
+
+        function listar() {
+            fetch("/empresas/listar", {
+                method: "GET",
+            })
+                .then(function (resposta) {
+                    resposta.json().then((empresas) => {
+                        empresas.forEach((empresa) => {
+                            listaEmpresa.push(empresa);
+
+                            console.log("listaEmpresasCadastradas")
+                            console.log(listaEmpresa[0].codigo_cadastro)
+                     })  
+                    })
+                   })
+                    .catch(function (resposta) {
+                        console.log(`#ERRO: ${resposta}`);
+                    });
+        }
+
+        function sumirMensagem() {
+            erro.style.display = "none"
         }
 
         function toggleSenha(id, icon) {
@@ -203,9 +275,7 @@
             }
         }
 
-        function cadastrar() {
-            alert("Cadastro em desenvolvimento.");
-        }
+        
     </script>
 </body>
 

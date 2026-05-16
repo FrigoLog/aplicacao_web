@@ -7,6 +7,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../assets/css/style.css">
     <title>Frigolog - Login</title>
+    <script src="../js/sessao.js"></script>
 </head>
 
 <body class="body-cadastro">
@@ -67,6 +68,8 @@
                 <i class="bx bx-hide icone-direita" id="olho" onclick="toggleSenha()" style="cursor:pointer"></i>
             </div>
 
+            <div id="erro" class="alerta-login"></div>
+
             <button onclick="logar()" class="btn-login">Login</button>
 
             <div class="link-registro">
@@ -124,13 +127,13 @@
     let usuarios_senha = ["bruno@123", "matheus@123"]
 
     function logar() {
-        aguardar();
-        alerta_msg.innerHTML = "";
+        
+        erro.innerHTML = "";
         let emailInserido = ipt_email.value;
         let senhaInserido = ipt_senha.value;
 
-        if(emailVar == "" || senhaVar == ""){
-            alerta_msg.innerHTML = "Email ou senha inválidos.";
+        if(emailInserido == "" || senhaInserido == ""){
+            erro.innerHTML = "Email ou senha inválidos.";
         }
         
         fetch("usuarios/autenticar", {
@@ -167,7 +170,7 @@
 
                 resposta.text().then(texto => {
                     console.log(texto);
-                    finalizarAguardar(texto);
+                    
                 });
             }
         }).catch(function (erro) {
