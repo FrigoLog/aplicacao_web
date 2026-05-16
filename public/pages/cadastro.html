@@ -166,17 +166,17 @@
 
         let listaEmpresa = [];
  
-        // ✅ Carrega a lista de empresas assim que a página abre
+        
         listar();
  
         function cadastrar() {
             var nomeInserido = ipt_nome.value;
             var emailInserido = ipt_email.value;
             var senhaInserida = ipt_senha.value;
-            var confirmacaoSenha = ipt_confirmar.value; // ✅ CORRIGIDO: adicionado .value
+            var confirmacaoSenha = ipt_confirmar.value; 
             var codigoEmpresa = ipt_codigo.value;
  
-            // Validação de campos vazios
+           
             if (
                 nomeInserido == "" ||
                 emailInserido == "" ||
@@ -188,13 +188,13 @@
                 return false;
             }
  
-            // Validação de senhas iguais
+            
             if (senhaInserida !== confirmacaoSenha) {
                 erro.innerHTML = "As senhas não coincidem!";
                 return false;
             }
  
-            // ✅ CORRIGIDO: busca o id da empresa pelo código e para o loop corretamente
+            
             let idEmpresaVincular = null;
  
             for (let i = 0; i < listaEmpresa.length; i++) {
@@ -206,7 +206,7 @@
  
             if (idEmpresaVincular === null) {
                 erro.innerHTML = "Código de empresa inválido!";
-                return false; // ✅ Para a execução aqui, não envia o fetch
+                return false; 
             }
  
             erro.innerHTML = "";
