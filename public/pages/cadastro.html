@@ -164,49 +164,59 @@
 
     <script>
 
-        let listaEmpresa = []; 
-
+        let listaEmpresa = [];
+ 
+        // ✅ Carrega a lista de empresas assim que a página abre
+        listar();
+ 
         function cadastrar() {
             var nomeInserido = ipt_nome.value;
             var emailInserido = ipt_email.value;
             var senhaInserida = ipt_senha.value;
-            var confirmacaoSenha = ipt_confirmar.value;
-            var CodigoEmpresa = ipt_codigo.value;
-            var idEmpresaVincular
-
-            if(
+            var confirmacaoSenha = ipt_confirmar.value; // ✅ CORRIGIDO: adicionado .value
+            var codigoEmpresa = ipt_codigo.value;
+ 
+            // Validação de campos vazios
+            if (
                 nomeInserido == "" ||
                 emailInserido == "" ||
                 senhaInserida == "" ||
                 confirmacaoSenha == "" ||
-                CodigoEmpresa == ""
-            ){
-                erro.innerHTML = "Há Campos em branco por favor Insira os dados corretamente";
-
-                
+                codigoEmpresa == ""
+            ) {
+                erro.innerHTML = "Há campos em branco. Por favor, preencha todos os dados.";
                 return false;
-            } else {
-                setInterval(sumirMensagem, 5000);
             }
-
-            for(let i = 0; i < listaEmpresa.length; i++) {
-                if(listaEmpresa[i].codigo_cadastro == CodigoEmpresa) {
-                    idEmpresaVincular = listaEmpresa[i].id_empresa
-                    console.log("Codigo empresa válido.");
+ 
+            // Validação de senhas iguais
+            if (senhaInserida !== confirmacaoSenha) {
+                erro.innerHTML = "As senhas não coincidem!";
+                return false;
+            }
+ 
+            // ✅ CORRIGIDO: busca o id da empresa pelo código e para o loop corretamente
+            let idEmpresaVincular = null;
+ 
+            for (let i = 0; i < listaEmpresa.length; i++) {
+                if (listaEmpresa[i].codigo_cadastro == codigoEmpresa) {
+                    idEmpresaVincular = listaEmpresa[i].id_empresa;
                     break;
-                } else {
-                    erro.innerHTML = "(Codigo de empresa inválido!)";
-                    
                 }
             }
-
+ 
+            if (idEmpresaVincular === null) {
+                erro.innerHTML = "Código de empresa inválido!";
+                return false; // ✅ Para a execução aqui, não envia o fetch
+            }
+ 
+            erro.innerHTML = "";
+ 
             fetch("/usuarios/cadastrar", {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/json",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    
                     nomeServer: nomeInserido,
                     emailServer: emailInserido,
                     senhaServer: senhaInserida,
@@ -215,55 +225,48 @@
             })
                 .then(function (resposta) {
                     console.log("resposta: ", resposta);
-
-                    if(resposta.ok) {
-                       sucesso.innerHTML = 
-                        "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
+ 
+                    if (resposta.ok) {
+                        sucesso.innerHTML =
+                            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+ 
                         setTimeout(() => {
                             window.location = "login.html";
-                        }, "2000");
-
-                        limparFormulario();
-                        
-                    }   else {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
-                    }  
+                        }, 2000);
+ 
+                    } else {
+                        resposta.text().then(texto => {
+                            erro.innerHTML = "Erro ao cadastrar: " + texto;
+                        });
+                    }
                 })
-                .catch(function (resposta) {
-                    console.log(`#ERRO: ${resposta}`);
-                   
+                .catch(function (err) {
+                    console.log(`#ERRO: ${err}`);
+                    erro.innerHTML = "Erro de conexão com o servidor.";
                 });
-
+ 
             return false;
         }
-
+ 
         function listar() {
             fetch("/empresas/listar", {
                 method: "GET",
             })
                 .then(function (resposta) {
-                    resposta.json().then((empresas) => {
-                        empresas.forEach((empresa) => {
-                            listaEmpresa.push(empresa);
-
-                            console.log("listaEmpresasCadastradas")
-                            console.log(listaEmpresa[0].codigo_cadastro)
-                     })  
-                    })
-                   })
-                    .catch(function (resposta) {
-                        console.log(`#ERRO: ${resposta}`);
-                    });
+                    return resposta.json();
+                })
+                .then(function (empresas) {
+                    listaEmpresa = empresas;
+                    console.log("Empresas carregadas:", listaEmpresa);
+                })
+                .catch(function (err) {
+                    console.log(`#ERRO ao carregar empresas: ${err}`);
+                });
         }
-
-        function sumirMensagem() {
-            erro.style.display = "none"
-        }
-
+ 
         function toggleSenha(id, icon) {
             const campo = document.getElementById(id);
-
+ 
             if (campo.type == "password") {
                 campo.type = "text";
                 icon.classList.remove("bx-hide");

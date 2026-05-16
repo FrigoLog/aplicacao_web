@@ -19,10 +19,11 @@ function autenticar(req,res){
                 console.log(Autenticacao);
                 
                 res.json({
+                    
                     id_usuario: Autenticacao[0].id_usuario,
                     nome: Autenticacao[0].nome,
-                    senha: Autenticacao[0].senha,
-                    email: Autenticacao[0].senha
+                    email: Autenticacao[0].email
+                    
                     
                     });
                 } else if(Autenticacao.length == 0){
