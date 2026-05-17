@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Frigolog</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+
+        <div class="logo">
+            <a href="../index.html" class="logo-link">
+                <div class="logo-row">
+                    <img class="logo-icon" src="./iconlogo.png" alt="Logo">
+                    <div class="logo-text">
+                        <span class="blue">FRIGO</span><span class="red">LOG</span>
+                    </div>
+                </div>
+            </a>
+
+            <div class="logo-badge">
+                CONTROLE TÉRMICO DE PONTA A PONTA
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <span class="icon">📊</span>
+            <span class="text">Dashboard Geral</span>
+        </div>
+
+
+        <div class="logout-btn" onclick="logout()">
+            <span class="icon">⎋</span>
+            <span class="text">Sair</span>
+        </div>
+    </div>
+
+    <div class="conteudo">
+        <h1 class="conteudo-title">Monitoramento Geral</h1>
+
+        <div class="kpis">
+            <div class="kpi-card otimo">
+                <div class="kpi-bar"></div>
+                <h3>Conformidade do Sistema</h3>
+                <p>96%</p>
+            </div>
+
+            <div class="kpi-card alerta">
+                <div class="kpi-bar"></div>
+                <h3>Pontos Operacionais Críticos</h3>
+                <p>2</p>
+            </div>
+
+            <div class="kpi-card critico">
+                <div class="kpi-bar"></div>
+                <h3>Alertas nas Últimas 24h</h3>
+                <p>45</p>
+                <span>PO com mais alertas: Câmara Fria 2 (Ambiente 2)</span>
+            </div>
+
+            <div class="kpi-card critico">
+                <div class="kpi-bar"></div>
+                <h3>Ponto Operacional Mais Crítico</h3>
+                <p>Câmara Fria 2 (Ambiente 2)</p>
+                <span>+8°C acima do limite</span>
+            </div>
+        </div>
+
+        <div class="graficos">
+            <div class="grafico-card">
+                <div class="grafico-header">
+                    <div class="grafico-title">
+                        <h3>Linha Temporal da Conformidade do Sistema</h3>
+                        <span class="grafico-subtitle">Percentual de leituras dentro da faixa ideal ao longo do
+                            tempo</span>
+                    </div>
+
+                    <div class="grafico-filtro">
+                        <label for="filtroConformidade">Período</label>
+                        <select id="filtroConformidade">
+                            <option value="dia">Dia</option>
+                            <option value="semana">Semana</option>
+                            <option value="mes">Mês</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grafico-container">
+                    <canvas id="graficoConformidadeTemporal"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="graficos">
+            <div class="grafico-card">
+                <h3>Não Conformidade por Ambiente</h3>
+                <span class="grafico-subtitle">Percentual de leituras fora da faixa ideal por ambiente</span>
+                <div class="grafico-container">
+                    <canvas id="graficoNaoConformidadeAmbiente"></canvas>
+                </div>
+            </div>
+
+            <div class="grafico-card">
+                <h3>Status dos Pontos Operacionais</h3>
+                <span class="grafico-subtitle">Distribuição entre PO's normais, em alerta e críticos</span>
+                <div class="grafico-container">
+                    <canvas id="graficoStatusAmbientes"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function logout() {
+        window.location.href = "../../index.html"
+    }
+
+    function corPorNaoConformidade(valor) {
+        if (valor <= 4) return '#2ecc71';
+        if (valor <= 15) return '#f1c40f';
+        return '#e74c3c';
+    }
+
+    function corPorConformidade(valor) {
+        if (valor > 95) return '#2ecc71';
+        if (valor >= 85) return '#f1c40f';
+        return '#e74c3c';
+    }
+
+
+    const dadosConformidade = [97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 88, 90, 92, 94, 95, 96, 97, 96, 96];
+    const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
+    new Chart(ctxConformidade, {
+        type: 'line',
+        data: {
+            labels: [
+                '00:00', '01:00', '02:00', '03:00', '04:00',
+                '05:00', '06:00', '07:00', '08:00', '09:00',
+                '10:00', '11:00', '12:00', '13:00', '14:00',
+                '15:00', '16:00', '17:00', '18:00', '19:00',
+                '20:00', '21:00'
+            ],
+            datasets: [{
+                label: 'Conformidade (%)',
+                data: dadosConformidade,
+
+                borderColor: '#2ecc71',
+
+                segment: {
+                    borderColor: ctx => {
+                        const proximoValor = ctx.p1.parsed.y;
+                        return corPorConformidade(proximoValor);
+                    }
+                },
+
+                pointBackgroundColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+                pointBorderColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                borderWidth: 3,
+                tension: 0.4,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    min: 70,
+                    max: 100,
+                    ticks: {
+                        callback: value => value + '%'
+                    }
+                }
+            }
+        }
+    });
+
+
+    const dadosNaoConformidade = [6, 18, 9, 12];
+    const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');
+
+    new Chart(ctxNaoConformidade, {
+        type: 'bar',
+        data: {
+            labels: ['Ambiente 1', 'Ambiente 2', 'Ambiente 3', 'Ambiente 4'],
+            datasets: [{
+                label: 'Não conformidade (%)',
+                data: dadosNaoConformidade,
+                backgroundColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
+                borderColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 30,
+                }
+            }
+        }
+    });
+
+    const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
+
+    new Chart(ctxStatusAmbientes, {
+        type: 'doughnut',
+        data: {
+            labels: ['Normal', 'Alerta', 'Crítico'],
+            datasets: [{
+                label: "Status dos PO's",
+                data: [24, 1, 2],
+                backgroundColor: [
+                    '#2ecc71',
+                    '#f1c40f',
+                    '#e74c3c'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+
+</html>
