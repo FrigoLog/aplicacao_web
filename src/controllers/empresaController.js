@@ -27,7 +27,29 @@ function cadastrar(req, res) {
     } else if (cnpj == undefined) {
         res.status(400).send("A cnpj está undefined!")
     } else {
-        empresaModel.cadastrar(razaoSocial, cnpj, codigoCadastro)
+
+        let codigoValido = false
+        let codigo = ""
+
+        while (!codigoValido) {
+
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let codigo = 'FRG';
+
+            for (let i = 3; i < 8; i++) {
+                codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+
+            empresaModel.verificarCodigoCadastro(codigo)
+            .then((resultado) => {
+                if(resultado[0].qtdEmpresa == 0){
+                    codigoValido = true
+                    break
+                }
+            })
+        }
+
+        empresaModel.cadastrar(razaoSocial, cnpj, codigo)
             .then(function (resultado) {
                 res.json(resultado);
             })
