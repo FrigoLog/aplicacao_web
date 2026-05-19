@@ -22,7 +22,15 @@ function cadastrar(razaoSocial, cnpj, codigoCadastro) {
     
 }
 
+function verificarCodigoCadastro(codigoCadastro){
+    
+    var instrucaoSql = `SELECT COUNT(*) AS qtdEmpresa FROM empresa WHERE codigo_cadastro = '${codigoCadastro}'`
+
+    return database.executar(instrucaoSql) 
+}
+
 module.exports = {
     listar,
-    cadastrar
+    cadastrar,
+    verificarCodigoCadastro
 };

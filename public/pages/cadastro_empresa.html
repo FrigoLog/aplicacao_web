@@ -112,7 +112,6 @@
                     <a href="#">Instagram</a>
                     <a href="#">WhatsApp</a>
                 </div>
-
             </div>
 
             <div class="footer-col">
@@ -149,28 +148,6 @@
                 icon.classList.add("bx-hide");
             }
         }
-
-       /* function gerarCodigoCadastro() {*/
-    
-
-        function cadastrar() {
-
-            const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    let codigo = "FRG";
-
-    for (let i = 0; i < 5; i++) {
-        const indice = Math.floor(Math.random() * caracteres.length);
-        codigo += caracteres[indice];
-    }
-console.log(codigo);
-
-codigo_div.innerHTML = `${codigo}`
-
-    return codigo;
-
-            alert("Cadastro em desenvolvimento.");
-            }
         
     </script>
 </body>
