@@ -15,7 +15,7 @@ function listar(req, res) {
 
 }
 
-function cadastrar(req, res) {
+async function cadastrar(req, res) {
     console.log("Acessei o empresaController - cadastrar");
 
     var razaoSocial = req.body.razaoSocialServer;
@@ -34,24 +34,32 @@ function cadastrar(req, res) {
         while (!codigoValido) {
 
             const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let codigo = 'FRG';
+            codigo = 'FRG';
 
             for (let i = 3; i < 8; i++) {
                 codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
             }
 
-            empresaModel.verificarCodigoCadastro(codigo)
-            .then((resultado) => {
-                if(resultado[0].qtdEmpresa == 0){
-                    codigoValido = true
-                    break
-                }
-            })
+            console.log('Código gerado: ', codigo)
+
+            let resultado = await empresaModel.verificarCodigoCadastro(codigo)
+            if(resultado[0].qtdEmpresa == 0){
+                codigoValido = true
+                console.log('Código válido')
+                break; 
+            }else{
+                console.log("Código inválido, tentando novamente")
+            }
+            
         }
 
         empresaModel.cadastrar(razaoSocial, cnpj, codigo)
             .then(function (resultado) {
-                res.json(resultado);
+                res.json({
+                    empresa_id: resultado.insertId,
+                    codigo_empresa: codigo
+                });
+                
             })
             .catch(function (erro) {
                 console.log("\nHouve erro ao cadastrar empresa! ERRO: ", erro.sqlMessage);
