@@ -1,10 +1,14 @@
 var express = require("express");
 var router = express.Router();
 
-var medidaController = require("../controllers/medidaController");
+var leituraController = require("../controllers/leituraController");
 
 router.get("/ultimas", function (req, res) {
-    medidaController.buscarUltimasLeituras(req, res);
+    leituraController.buscarUltimasLeituras(req, res);
+});
+
+router.get("/conformidade", function (req, res) {
+    leituraController.buscarConformidade(req, res);
 });
 
 module.exports = router;
