@@ -43,10 +43,10 @@
         <h1 class="conteudo-title">Monitoramento Geral</h1>
 
         <div class="kpis">
-            <div class="kpi-card otimo">
+            <div class="kpi-card otimo" id="kpi_card_conformidade">
                 <div class="kpi-bar"></div>
                 <h3>Conformidade do Sistema</h3>
-                <p>96%</p>
+                <p id="kpi_conformidade_do_sistema_porcentagem">96%</p>
             </div>
 
             <div class="kpi-card alerta">
@@ -115,7 +115,9 @@
     </div>
 </body>
 <script>
-    graficoConformidade();
+    obterDadosConformidade();
+    plotarGrafico();
+    kpiConformidade();
 
     function logout() {
         window.location.href = "../../index.html"
@@ -133,81 +135,99 @@
         return '#e74c3c';
     }
 
-
-    function graficoConformidade() {
+    // Obtem a conformidade do sistema
+    async function obterDadosConformidade() {
         const ID_EMPRESA = sessionStorage.ID_EMPRESA;
-        fetch(`/leituras/conformidade/${ID_EMPRESA}`, { cache: 'no-store' }).then(function (response) {
-            if (response.ok) {
-                response.json().then(function (resposta) {
-                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
-                    const dadosConformidade= [90, 85];
-                    for (let i = 0; i < resposta.length; i++) {
-                        dadosConformidade.push(Number(resposta[i].porcentagem));
-                    }
+        const response = await fetch(`/leituras/conformidade/${ID_EMPRESA}`, { cache: 'no-store' });
+        const dadosjson = await response.json();
 
-                    const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
-                    new Chart(ctxConformidade, {
-                        type: 'line',
-                        data: {
-                            labels: [
-                                '00:00', '01:00', '02:00', '03:00', '04:00',
-                                '05:00', '06:00', '07:00', '08:00', '09:00',
-                                '10:00', '11:00', '12:00', '13:00', '14:00',
-                                '15:00', '16:00', '17:00', '18:00', '19:00',
-                                '20:00', '21:00'
-                            ],
-                            datasets: [{
-                                label: 'Conformidade (%)',
-                                data: dadosConformidade,
+        const dadosConformidade = [90, 85];
+        for (let i = 0; i < dadosjson.length; i++) {
+            dadosConformidade.push(Number(dadosjson[i].porcentagem));
+        }
 
-                                borderColor: '#2ecc71',
+        return dadosConformidade;
+    }
 
-                                segment: {
-                                    borderColor: ctx => {
-                                        const proximoValor = ctx.p1.parsed.y;
-                                        return corPorConformidade(proximoValor);
-                                    }
-                                },
 
-                                pointBackgroundColor: dadosConformidade.map(valor => corPorConformidade(valor)),
-                                pointBorderColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+    // Plota o gráfico de conformidade do sistema
+    async function plotarGrafico() {
+        const dadosConformidade = await obterDadosConformidade();
 
-                                pointRadius: 6,
-                                pointHoverRadius: 8,
-                                borderWidth: 3,
-                                tension: 0.4,
-                                fill: false
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    min: 0,
-                                    max: 100,
-                                    ticks: {
-                                        callback: value => value + '%'
-                                    }
-                                }
-                            }
+        const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
+        new Chart(ctxConformidade, {
+            type: 'line',
+            data: {
+                labels: [
+                    '00:00', '01:00', '02:00', '03:00', '04:00',
+                    '05:00', '06:00', '07:00', '08:00', '09:00',
+                    '10:00', '11:00', '12:00', '13:00', '14:00',
+                    '15:00', '16:00', '17:00', '18:00', '19:00',
+                    '20:00', '21:00'
+                ],
+                datasets: [{
+                    label: 'Conformidade (%)',
+                    data: dadosConformidade,
+
+                    borderColor: '#2ecc71',
+
+                    segment: {
+                        borderColor: ctx => {
+                            const proximoValor = ctx.p1.parsed.y;
+                            return corPorConformidade(proximoValor);
                         }
-                    });
+                    },
 
-                });
-            } else {
-                console.error('Nenhum dado encontrado ou erro na API');
+                    pointBackgroundColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+                    pointBorderColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            callback: value => value + '%'
+                        }
+                    }
+                }
             }
-        })
-            .catch(function (error) {
-                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
-            });
+        });
+
+    }
+
+
+    // Adiciona a porcentagem de conformidade do sistema na KPI de conformidade 
+    async function kpiConformidade() {
+        const dadosConformidade = await obterDadosConformidade();
+
+        const ultima_conformidade = dadosConformidade[dadosConformidade.length - 1];
+        kpi_conformidade_do_sistema_porcentagem.innerHTML = `${ultima_conformidade}%`;
+
+        if (ultima_conformidade > 95) {
+            kpi_card_conformidade.className = "kpi-card otimo";
+        }
+        else if (ultima_conformidade >= 85) {  
+            kpi_card_conformidade.className = "kpi-card alerta";
+        }
+        else {
+            kpi_card_conformidade.className = "kpi-card critico";
+        }
     }
 
     const dadosNaoConformidade = [6, 18, 9, 12];
