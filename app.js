@@ -19,6 +19,8 @@ var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 var empresaRouter = require("./src/routes/empresas");
 var leituraRouter = require("./src/routes/leitura");
+var bobiaRouter = require("./src/routes/bobia");
+
 // ADICIONAR ROUTERS FRIGOLOG
 
 app.use(express.json());
@@ -31,6 +33,7 @@ app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/empresas", empresaRouter);
 app.use("/leituras", leituraRouter)
+app.use("/bobia", bobiaRouter)
 
 // APP USE ROUTERS FRIGOLOG
 
