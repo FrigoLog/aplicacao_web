@@ -22,8 +22,8 @@ function autenticar(req,res){
                     
                     id_usuario: Autenticacao[0].id_usuario,
                     nome: Autenticacao[0].nome,
-                    email: Autenticacao[0].email
-                    
+                    email: Autenticacao[0].email,
+                    id_empresa: Autenticacao[0].fk_empresa
                     
                     });
                 } else if(Autenticacao.length == 0){

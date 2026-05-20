@@ -7,7 +7,7 @@ router.get("/ultimas", function (req, res) {
     leituraController.buscarUltimasLeituras(req, res);
 });
 
-router.get("/conformidade", function (req, res) {
+router.get("/conformidade/:idEmpresa", function (req, res) {
     leituraController.buscarConformidade(req, res);
 });
 

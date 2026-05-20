@@ -122,12 +122,7 @@
 
 </body>
 <script>
-    
-    let usuarios_email = ["bruno@frigolog.com", "matheus@frigolog.com"]
-    let usuarios_senha = ["bruno@123", "matheus@123"]
-
     function logar() {
-        
         erro.innerHTML = "";
         let emailInserido = ipt_email.value;
         let senhaInserido = ipt_senha.value;
@@ -157,8 +152,9 @@
                     sessionStorage.EMAIL_USUARIO = json.email;
                     sessionStorage.NOME_USUARIO = json.nome;
                     sessionStorage.ID_USUARIO = json.id_usuario;
+                    sessionStorage.ID_EMPRESA = json.id_empresa;
                     
-                     window.location = "/";
+                    window.location = "./dashboard/dashboard.html";
         
                 });
                 

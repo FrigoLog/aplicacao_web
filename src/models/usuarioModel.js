@@ -5,7 +5,7 @@ function autenticar(email, senha){
     console.log("ACESSEI O USUARIO MODEL");
     
     var instrucaoSql = `
-    SELECT id_usuario, nome, email, fk_tipo_usuario, fk_empresa from usuario where email = '${email}' and senha =  SHA2('${senha}',224)
+        SELECT id_usuario, nome, email, fk_empresa from usuario where email = '${email}' and senha =  SHA2('${senha}',224)
     `;
     console.log("Executando a instruçãoSQL");
     return database.executar(instrucaoSql);

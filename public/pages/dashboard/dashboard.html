@@ -115,6 +115,8 @@
     </div>
 </body>
 <script>
+    graficoConformidade();
+
     function logout() {
         window.location.href = "../../index.html"
     }
@@ -132,61 +134,81 @@
     }
 
 
-    const dadosConformidade = [97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 88, 90, 92, 94, 95, 96, 97, 96, 96];
-    const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
-    new Chart(ctxConformidade, {
-        type: 'line',
-        data: {
-            labels: [
-                '00:00', '01:00', '02:00', '03:00', '04:00',
-                '05:00', '06:00', '07:00', '08:00', '09:00',
-                '10:00', '11:00', '12:00', '13:00', '14:00',
-                '15:00', '16:00', '17:00', '18:00', '19:00',
-                '20:00', '21:00'
-            ],
-            datasets: [{
-                label: 'Conformidade (%)',
-                data: dadosConformidade,
+    function graficoConformidade() {
+        const ID_EMPRESA = sessionStorage.ID_EMPRESA;
+        fetch(`/leituras/conformidade/${ID_EMPRESA}`, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(function (resposta) {
+                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
-                borderColor: '#2ecc71',
-
-                segment: {
-                    borderColor: ctx => {
-                        const proximoValor = ctx.p1.parsed.y;
-                        return corPorConformidade(proximoValor);
+                    const dadosConformidade= [90, 85];
+                    for (let i = 0; i < resposta.length; i++) {
+                        dadosConformidade.push(Number(resposta[i].porcentagem));
                     }
-                },
 
-                pointBackgroundColor: dadosConformidade.map(valor => corPorConformidade(valor)),
-                pointBorderColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+                    const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
+                    new Chart(ctxConformidade, {
+                        type: 'line',
+                        data: {
+                            labels: [
+                                '00:00', '01:00', '02:00', '03:00', '04:00',
+                                '05:00', '06:00', '07:00', '08:00', '09:00',
+                                '10:00', '11:00', '12:00', '13:00', '14:00',
+                                '15:00', '16:00', '17:00', '18:00', '19:00',
+                                '20:00', '21:00'
+                            ],
+                            datasets: [{
+                                label: 'Conformidade (%)',
+                                data: dadosConformidade,
 
-                pointRadius: 6,
-                pointHoverRadius: 8,
-                borderWidth: 3,
-                tension: 0.4,
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    min: 70,
-                    max: 100,
-                    ticks: {
-                        callback: value => value + '%'
-                    }
-                }
+                                borderColor: '#2ecc71',
+
+                                segment: {
+                                    borderColor: ctx => {
+                                        const proximoValor = ctx.p1.parsed.y;
+                                        return corPorConformidade(proximoValor);
+                                    }
+                                },
+
+                                pointBackgroundColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+                                pointBorderColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+
+                                pointRadius: 6,
+                                pointHoverRadius: 8,
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    min: 0,
+                                    max: 100,
+                                    ticks: {
+                                        callback: value => value + '%'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
             }
-        }
-    });
-
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+            });
+    }
 
     const dadosNaoConformidade = [6, 18, 9, 12];
     const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');

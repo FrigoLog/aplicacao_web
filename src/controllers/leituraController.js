@@ -1,7 +1,6 @@
 var leituraModel = require("../models/leituraModel");
 
 function buscarUltimasLeituras(req, res) {
-
     leituraModel.buscarUltimasLeituras().then(function (resultado) {
         if (resultado.length > 0) {
             res.status(200).json(resultado);
@@ -16,8 +15,9 @@ function buscarUltimasLeituras(req, res) {
 }
 
 function buscarConformidade(req, res) {
+    const id_empresa = req.params.idEmpresa;
 
-    leituraModel.buscarConformidade().then(function (resultado) {
+    leituraModel.buscarConformidade(id_empresa).then(function (resultado) {
         if (resultado.length > 0) {
             res.status(200).json(resultado);
         } else {
