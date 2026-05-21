@@ -16,7 +16,16 @@ function buscarConformidade(id_empresa) {
     return database.executar(instrucaoSql);
 }
 
+function buscarNaoConformidade(id_empresa) {
+
+    var instrucaoSql= `SELECT * FROM vw_nao_conformidade WHERE id_empresa = ${id_empresa}`
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     buscarUltimasLeituras,
-    buscarConformidade
+    buscarConformidade,
+    buscarNaoConformidade
 }

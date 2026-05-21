@@ -150,6 +150,20 @@
         return dadosConformidade;
     }
 
+        async function obterDadosNaoConformidade() {
+        const ID_EMPRESA = sessionStorage.ID_EMPRESA;
+
+        const response = await fetch(`/leituras/nao_conformidade/${ID_EMPRESA}`, { cache: 'no-store' });
+        const dadosjson = await response.json();
+
+        const dadosNaoConformidade = [];
+        for (let i = 0; i < dadosjson.length; i++) {
+            dadosNaoConformidade.push(Number(dadosjson[i].porcentagem));
+        }
+
+        return dadosNaoConformidade;
+    }
+
 
     // Plota o gráfico de conformidade do sistema
     async function plotarGrafico() {
@@ -230,7 +244,8 @@
         }
     }
 
-    const dadosNaoConformidade = [6, 18, 9, 12];
+    async function plotarGrafico() {
+    const dadosNaoConformidade = await obterDadosNaoConformidade();
     const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');
 
     new Chart(ctxNaoConformidade, {
@@ -262,6 +277,7 @@
             }
         }
     });
+}
 
     const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
 

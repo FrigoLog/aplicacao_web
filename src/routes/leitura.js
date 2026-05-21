@@ -11,4 +11,8 @@ router.get("/conformidade/:idEmpresa", function (req, res) {
     leituraController.buscarConformidade(req, res);
 });
 
+router.get("/nao_conformidade/:idEmpresa", function (req, res) {
+    leituraController.buscarNaoConformidade(req, res);
+});
+
 module.exports = router;
