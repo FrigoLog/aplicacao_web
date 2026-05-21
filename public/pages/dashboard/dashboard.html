@@ -115,7 +115,7 @@
     </div>
 </body>
 <script>
-    obterDadosConformidade();
+    const ID_EMPRESA = sessionStorage.ID_EMPRESA;
     plotarGrafico();
     kpiConformidade();
 
@@ -137,8 +137,6 @@
 
     // Obtem a conformidade do sistema
     async function obterDadosConformidade() {
-        const ID_EMPRESA = sessionStorage.ID_EMPRESA;
-
         const response = await fetch(`/leituras/conformidade/${ID_EMPRESA}`, { cache: 'no-store' });
         const dadosjson = await response.json();
 
@@ -150,25 +148,30 @@
         return dadosConformidade;
     }
 
-        async function obterDadosNaoConformidade() {
-        const ID_EMPRESA = sessionStorage.ID_EMPRESA;
+    async function obterDadosNaoConformidade() {
 
         const response = await fetch(`/leituras/nao_conformidade/${ID_EMPRESA}`, { cache: 'no-store' });
         const dadosjson = await response.json();
 
         const dadosNaoConformidade = [];
         for (let i = 0; i < dadosjson.length; i++) {
-            dadosNaoConformidade.push(Number(dadosjson[i].porcentagem));
+            dadosNaoConformidade.push(
+                {
+                    "nome": dadosjson[i].nome_ambiente,
+                    "porcentagem": Number(dadosjson[i].porcentagem)
+                }
+            );
         }
 
         return dadosNaoConformidade;
     }
 
-
-    // Plota o gráfico de conformidade do sistema
+    // Plota os gráficos
     async function plotarGrafico() {
         const dadosConformidade = await obterDadosConformidade();
+        const dadosNaoConformidade = await obterDadosNaoConformidade();
 
+        // Adiciona o gráfico de conformidade do sistema
         const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
         new Chart(ctxConformidade, {
             type: 'line',
@@ -223,8 +226,46 @@
             }
         });
 
-    }
+        const ambientesNaoConformidade = []; // Nome dos ambientes de não conformidade
+        const porcentagemNaoConformidade = []; // Porcentagem de não conformidade do sistema
 
+        for (let i = 0; i < dadosNaoConformidade.length; i++) {
+            ambientesNaoConformidade.push(dadosNaoConformidade[i].nome);
+            porcentagemNaoConformidade.push(dadosNaoConformidade[i].porcentagem);
+        }
+
+        // Adiciona o gráfico de não conformidade
+        const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');
+        new Chart(ctxNaoConformidade, {
+            type: 'bar',
+            data: {
+                labels: ambientesNaoConformidade,
+                datasets: [{
+                    label: 'Não conformidade (%)',
+                    data: porcentagemNaoConformidade,
+                    backgroundColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
+                    borderColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                    }
+                }
+            }
+        });
+    }
 
     // Adiciona a porcentagem de conformidade do sistema na KPI de conformidade 
     async function kpiConformidade() {
@@ -236,7 +277,7 @@
         if (ultima_conformidade > 95) {
             kpi_card_conformidade.className = "kpi-card otimo";
         }
-        else if (ultima_conformidade >= 85) {  
+        else if (ultima_conformidade >= 85) {
             kpi_card_conformidade.className = "kpi-card alerta";
         }
         else {
@@ -244,40 +285,6 @@
         }
     }
 
-    async function plotarGrafico() {
-    const dadosNaoConformidade = await obterDadosNaoConformidade();
-    const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');
-
-    new Chart(ctxNaoConformidade, {
-        type: 'bar',
-        data: {
-            labels: ['Ambiente 1', 'Ambiente 2', 'Ambiente 3', 'Ambiente 4'],
-            datasets: [{
-                label: 'Não conformidade (%)',
-                data: dadosNaoConformidade,
-                backgroundColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
-                borderColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    max: 30,
-                }
-            }
-        }
-    });
-}
 
     const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
 
