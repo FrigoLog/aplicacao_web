@@ -10,6 +10,14 @@ router.get("/listar", function (req, res) {
 router.post("/cadastrar", function (req, res) {
     empresaController.cadastrar(req, res);
 });
+
+router.get("/listarAmbientes/:idEmpresa", function (req, res) {
+    empresaController.listarAmbientes(req, res);
+});
+
+router.get("/listarPOs/:idAmbiente", function (req, res) {
+    empresaController.listarPOs(req, res);
+});
  
 module.exports = router;
  

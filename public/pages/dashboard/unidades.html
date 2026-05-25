@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,9 @@
 
     <script src="../js/sessao.js"></script>
 </head>
+
 <body>
     <div class="sidebar">
-
         <div class="logo">
             <a href="../index.html" class="logo-link">
                 <div class="logo-row">
@@ -39,22 +40,77 @@
         </div>
     </div>
 
-    <div class="conteudo">
-        <h1 class="conteudo-title">Selecione uma unidade para analisar os Pontos Operacionais</h1>
+    <div class="conteudo-geral">
+        <div class="subconteudo" id="conteudoAmbientes">
+            <h1 class="conteudo-title">Selecione uma unidade para analisar os Pontos Operacionais</h1>
 
-        <div class="unidade-list">
-            <div class="kpi-card">
-                <span id="span_un1">Carregando...</span>
+            <div class="unidade-list" id="id_lista_ambientes">
+
             </div>
         </div>
+
+        <div class="subconteudo" id="conteudoPO">
+            <h1 class="conteudo-title">Selecione um PO para </h1>
+
+            <div class="unidade-list" id="id_lista_po">
+
+            </div>
+        </div>
+    </div>
 </body>
 <script>
-    
-    
+    listarAmbientes()
+    async function listarAmbientes() {
+        conteudoPO.style.display = "none";
+        id_lista_ambientes.innerHTML = ``;
+        let ambientes = [];
+
+        let resposta = await fetch(`/empresas/listarAmbientes/${sessionStorage.ID_EMPRESA}`)
+        ambientes = await resposta.json()
+        console.log(ambientes);
+
+        for (let i = 0; i < ambientes.length; i++) {
+            let ambiente_card = `
+            <div class="kpi-card" style="cursor: pointer;" onclick="abrirPO(${ambientes[i].id_ambiente})">
+                <span>${ambientes[i].nome}</span>
+                <span>CEP: ${ambientes[i].cep} | N°: ${ambientes[i].numero}</span>
+            </div>
+            `;
+
+            id_lista_ambientes.innerHTML += ambiente_card;
+        }
+
+        conteudoAmbientes.style.display = "block";
+    }
+
+    async function abrirPO(id_ambiente) {
+        conteudoAmbientes.style.display = "none";
+
+        id_lista_po.innerHTML = ``;
+        let pos = [];
+
+        let resposta = await fetch(`/empresas/listarPOs/${id_ambiente}`)
+        pos = await resposta.json()
+        console.log(pos);
+
+        for (let i = 0; i < pos.length; i++) {
+            let po_card = `
+            <div class="kpi-card" style="cursor: pointer;" onclick="detalharPO(${pos[i].id_po})">
+                <span>${pos[i].nome}</span>
+            </div>
+            `;
+
+            id_lista_po.innerHTML += po_card;
+        }
+
+
+        conteudoPO.style.display = "block";
+    }
 
 
     function logout() {
         window.location.href = "../../index.html"
     }
 </script>
+
 </html>
