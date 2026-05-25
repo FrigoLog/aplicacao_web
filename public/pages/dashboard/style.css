@@ -107,6 +107,25 @@ body {
     margin-bottom: 10px;
 }
 
+.menu-ativo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
+
+    gap: 10px;
+
+    background-color: #8e8d8d;
+    padding: 12px;
+    border-radius: 10px;
+
+    cursor: pointer;
+    transition: 0.3s;
+
+    margin-bottom: 10px;
+}
+
 .menu-item .icon {
     font-size: 18px;
 }
@@ -179,6 +198,19 @@ body {
 .conteudo-title {
     color: white;
     margin-bottom: 15px;
+}
+
+button {
+    background-color: #0b1533;
+    color: white;
+    border-radius: 25px;
+    padding: 5px;
+    cursor: pointer;
+    transition:0.2s
+}
+
+button:hover {
+    transform: scale(1.1);
 }
 
 .kpis {

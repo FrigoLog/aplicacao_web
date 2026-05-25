@@ -28,9 +28,14 @@
             </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" onclick="window.location.href='./dashboard.html'">
             <span class="icon">📊</span>
             <span class="text">Dashboard Geral</span>
+        </div>
+
+        <div class="menu-item menu-ativo">
+            <span class="icon">🧊</span>
+            <span class="text">Ambientes</span>
         </div>
 
 
@@ -50,7 +55,8 @@
         </div>
 
         <div class="subconteudo" id="conteudoPO">
-            <h1 class="conteudo-title">Selecione um PO para </h1>
+            <button onclick="listarAmbientes()">Voltar</button>
+            <h1 class="conteudo-title">Selecione um PO para ver detalhes </h1>
 
             <div class="unidade-list" id="id_lista_po">
 
