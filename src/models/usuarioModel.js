@@ -15,7 +15,7 @@ function autenticar(email, senha){
 function cadastrar(nome, email, fk_empresa, senha){
     console.log("Acessei o usuario Model");
 
-    var instrucaoSql = `insert into usuario(nome, email, fk_empresa, senha) values ('${nome}', '${email}', '${fk_empresa}', SHA2('${senha}',224))
+    var instrucaoSql = `insert into usuario(nome, email, fk_empresa, fk_tipo_usuario, senha) values ('${nome}', '${email}', '${fk_empresa}', 6, SHA2('${senha}',224))
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
