@@ -2,7 +2,6 @@ const { GoogleGenAI } = require("@google/genai");
 
 // função para gerar respostas usando o gemini
 async function gerarResposta(mensagem) {
-
     try {
         // configurando o gemini (IA)
         const chatIA = new GoogleGenAI({ apiKey: process.env.MINHA_CHAVE });
