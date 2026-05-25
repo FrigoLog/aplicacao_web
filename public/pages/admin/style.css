@@ -172,12 +172,12 @@ body {
     padding: 20px;
     width: 100%;
     background-color: white;
+    border-radius: 5px;
     
 }
 
 .conteudo-title {
     color: black
-    margin-bottom: 15px;
 }
 
 .posicao-titulo {
@@ -190,5 +190,27 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.inicio-mensagens {
+     display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    gap: 200px;
+}
+
+.posicao-mensagens {
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+.conteudo-bobia {
+    margin-left: 5vw;
+    margin-right: 2vw;
+    padding: 20px;
+    width: 100%;
+    background-color: white;
+    border-radius: 5px;
 }
 

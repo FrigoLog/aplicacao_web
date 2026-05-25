@@ -11,9 +11,9 @@
 <body>
     <div class="sidebar">
         <div class="logo">
-            <a href="../index.html" class="logo-link">
+            <a href="/index.html" class="logo-link">
                 <div class="logo-row">
-                    <img class="logo-icon" src="dashboard/iconlogo.png" alt="Logo">
+                    <img class="logo-icon" src="../../assets/img/iconlogo.png" alt="Logo">
                     <div class="logo-text">
                         <span class="blue">FRIGO</span><span class="red">LOG</span>
                     </div>
@@ -31,7 +31,7 @@
         </div>
         <div class="menu-item" onclick="alterarConteudo('mensagens')">
             <span class="icon"></span>
-            <span class="text">Mensagens Não Lidas</span>
+            <span class="text">Contatos</span>
         </div>
         <div class="menu-item" onclick="alterarConteudo('cadastrar_empresa')">
             <span class="icon"></span>
@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <div class="conteudo" id="bob_ia">
+    <div class="conteudo-bobia" id="bob_ia">
         <h1 class="conteudo-title">Bob IA</h1>
 
         <div class="container_bobia">
@@ -78,10 +78,21 @@
     <div class="conteudo" id="mensagens">
         <div class="titulo-subtitulo">
             <div class="posicao-titulo">
-                <h1 class="conteudo-title">Mensagens não lidas</h1>
+                <h1 class="conteudo-title">Contatos</h1>
                 <h2>15</h2>
             </div>
-            <div><h3>Mensagnes que ainda </h3></div>
+            <div>
+                <h4>Empresas que contataram via site institucional</h4>
+            </div>
+            <div class="inicio-mensagens">
+                <div>Nome</div>
+                <div>Empresa</div>
+                <div>Origem</div>
+                <div>Data do chamado</div>
+            </div>
+            <div id="mensagens_mostradas">
+                
+            </div>
         </div>
     </div>
 
@@ -113,7 +124,7 @@
     async function gerarResposta() {
         const pergunta = document.getElementById('pergunta').value;
 
-        const response = await fetch('/perguntar', {
+        const response = await fetch('/bobia/perguntar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -126,6 +137,30 @@
         resposta.style.display = 'block';
         document.getElementById('resposta').innerText = data.resultado;
     }
+
+    carregarMensagens()
+    function carregarMensagens() {
+        mensagens_mostradas.innerHTML = `
+        <div class="posicao-mensagens">
+<div class="inicio-mensagens">
+        <div>Luiz Phelipe</div>
+                <div>Seaara</div>
+                <div>Site institucional</div>
+                <div>25/05/2026</div>
+                </div>
+
+                <div class="inicio-mensagens">
+                 <div>Luiz Phelipe</div>
+                <div>Seaara</div>
+                <div>Site institucional</div>
+                <div>25/05/2026</div>
+                </div>
+ </div>
+ 
+ 
+ `
+    }
+
 
 </script>
 
