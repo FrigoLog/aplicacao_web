@@ -59,6 +59,10 @@ body {
     font-weight: 800;
 }
 
+.none {
+    display: none;
+}
+
 
 .white {
     color: #2b428c;

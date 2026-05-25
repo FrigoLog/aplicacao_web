@@ -153,8 +153,16 @@
                     sessionStorage.NOME_USUARIO = json.nome;
                     sessionStorage.ID_USUARIO = json.id_usuario;
                     sessionStorage.ID_EMPRESA = json.id_empresa;
-                    
-                    window.location = "./dashboard/dashboard.html";
+
+                    const tipo_usuario = json.tipo_usuario;
+                    sessionStorage.TIPO_USUARIO = tipo_usuario;
+
+                    if (tipo_usuario.endsWith("frigolog")) {
+                        window.location = "./admin/adm_frigolog.html";
+                    }
+                    else {
+                        window.location = "./dashboard/dashboard.html";
+                    }
         
                 });
                 
