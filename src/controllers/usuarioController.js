@@ -23,8 +23,8 @@ function autenticar(req,res){
                     id_usuario: Autenticacao[0].id_usuario,
                     nome: Autenticacao[0].nome,
                     email: Autenticacao[0].email,
-                    id_empresa: Autenticacao[0].fk_empresa
-                    
+                    id_empresa: Autenticacao[0].fk_empresa,
+                    tipo_usuario: Autenticacao[0].tipo
                     });
                 } else if(Autenticacao.length == 0){
                     res.status(403).send("Email e/ou senha Incorreto(s)");
