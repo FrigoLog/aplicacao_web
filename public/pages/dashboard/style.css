@@ -259,6 +259,12 @@ body {
     background-color: rgb(96, 226, 96);
 }
 
+.unidade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .graficos {
     display: flex;
     gap: 20px;

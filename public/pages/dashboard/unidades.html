@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friglog | Unidades</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="../js/sessao.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+
+        <div class="logo">
+            <a href="../index.html" class="logo-link">
+                <div class="logo-row">
+                    <img class="logo-icon" src="./iconlogo.png" alt="Logo">
+                    <div class="logo-text">
+                        <span class="blue">FRIGO</span><span class="red">LOG</span>
+                    </div>
+                </div>
+            </a>
+
+            <div class="logo-badge">
+                CONTROLE TÉRMICO DE PONTA A PONTA
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <span class="icon">📊</span>
+            <span class="text">Dashboard Geral</span>
+        </div>
+
+
+        <div class="logout-btn" onclick="logout()">
+            <span class="icon">⎋</span>
+            <span class="text">Sair</span>
+        </div>
+    </div>
+
+    <div class="conteudo">
+        <h1 class="conteudo-title">Selecione uma unidade para analisar os Pontos Operacionais</h1>
+
+        <div class="unidade-list">
+            <div class="kpi-card">
+                <span id="span_un1">Carregando...</span>
+            </div>
+        </div>
+</body>
+<script>
+    
+    
+
+
+    function logout() {
+        window.location.href = "../../index.html"
+    }
+</script>
+</html>
