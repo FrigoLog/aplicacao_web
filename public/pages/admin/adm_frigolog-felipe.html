@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Administrador</title>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <a href="/index.html" class="logo-link">
+                <div class="logo-row">
+                    <img class="logo-icon" src="../../assets/img/iconlogo.png" alt="Logo">
+                    <div class="logo-text">
+                        <span class="blue">FRIGO</span><span class="red">LOG</span>
+                    </div>
+                </div>
+            </a>
+
+            <div class="logo-badge">
+                CONTROLE TÉRMICO DE PONTA A PONTA
+            </div>
+        </div>
+
+        <div class="menu-item" onclick="alterarConteudo('inicio')">
+            <span class="icon"></span>
+            <span class="text">Início</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('mensagens')">
+            <span class="icon"></span>
+            <span class="text">Contatos</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('cadastrar_empresa')">
+            <span class="icon"></span>
+            <span class="text">Cadastrar Empresa</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('empresas_cadastradas')">
+            <span class="icon"></span>
+            <span class="text">Empresas Cadastradas</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('usuarios_clientes')">
+            <span class="icon"></span>
+            <span class="text">Usuários de clientes</span>
+        </div>
+
+        <div class="menu-item" onclick="alterarConteudo('bob_ia')">
+            <span class="icon"></span>
+            <span class="text">Bob IA</span>
+        </div>
+
+
+        <div class="logout-btn" onclick="logout()">
+            <span class="icon">⎋</span>
+            <span class="text">Sair</span>
+        </div>
+    </div>
+
+    <div class="conteudo-bobia" id="bob_ia">
+        <h1 class="conteudo-title">Bob IA</h1>
+
+        <div class="container_bobia">
+            <textarea id="pergunta" type="text" placeholder="Digite a pergunta..."></textarea>
+            <br><br>
+            <button onclick="gerarResposta()">Gerar Resposta</button>
+            <h3>Resposta da IA:</h3>
+            <div id="resposta"></div>
+        </div>
+    </div>
+
+    <div class="conteudo" id="inicio">
+        <h1 class="conteudo-title">Início</h1>
+    </div>
+
+
+    <div class="conteudo" id="mensagens">
+        <div class="titulo-subtitulo">
+            <div class="posicao-titulo">
+                <h1 class="conteudo-title">Contatos</h1>
+                <h2>15</h2>
+            </div>
+            <div>
+                <h4>Empresas que contataram via site institucional</h4>
+            </div>
+            <div class="inicio-mensagens">
+                <div>Nome</div>
+                <div>Empresa</div>
+                <div>Origem</div>
+                <div>Data do chamado</div>
+            </div>
+            <div id="mensagens_mostradas">
+                
+            </div>
+        </div>
+    </div>
+
+
+    <div class="conteudo" id="cadastrar_empresa">
+        <h1 class="conteudo-title">Cadastrar Empresa</h1>
+    </div>
+    <div class="conteudo" id="empresas_cadastradas">
+        <h1 class="conteudo-title">Empresas cadastradas</h1>
+    </div>
+    <div class="conteudo" id="usuarios_clientes">
+        <h1 class="conteudo-title">Clientes</h1>
+    </div>
+</body>
+<script>
+    //carrega inicialmente com a tela inicio:
+    alterarConteudo('inicio');
+    function alterarConteudo(id_conteudo) {
+        let conteudos = document.querySelectorAll(".conteudo")
+
+        for (let i = 0; i < conteudos.length; i++) {
+            conteudos[i].style.display = 'none'
+        }
+
+        document.getElementById(id_conteudo).style.display = 'block'
+    }
+
+    // função do BOB IA:
+    async function gerarResposta() {
+        const pergunta = document.getElementById('pergunta').value;
+
+        const response = await fetch('/bobia/perguntar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ pergunta })
+        });
+
+        const data = await response.json();
+
+        resposta.style.display = 'block';
+        document.getElementById('resposta').innerText = data.resultado;
+    }
+
+    carregarMensagens()
+    function carregarMensagens() {
+        mensagens_mostradas.innerHTML = `
+        <div class="posicao-mensagens">
+<div class="inicio-mensagens">
+        <div>Luiz Phelipe</div>
+                <div>Seaara</div>
+                <div>Site institucional</div>
+                <div>25/05/2026</div>
+                </div>
+
+                <div class="inicio-mensagens">
+                 <div>Luiz Phelipe</div>
+                <div>Seaara</div>
+                <div>Site institucional</div>
+                <div>25/05/2026</div>
+                </div>
+ </div>
+ 
+ 
+ `
+    }
+
+
+</script>
+
+</html>
