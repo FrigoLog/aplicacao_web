@@ -15,21 +15,16 @@ body {
     position: fixed;
     top: 0;
     left: -12vw;
-
     background-color: white;
     height: 100vh;
     width: 15vw;
-
     padding: 20px;
-
     border-radius: 0 15px 15px 0;
     transition: 0.4s ease;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     z-index: 999;
 }
 
@@ -171,15 +166,27 @@ body {
     margin-right: 2vw;
     padding: 20px;
     width: 100%;
-    background-color: white;
     border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+      background: #6785FF;
+      justify-content: center;
+      height: 500px;
     
 }
 
 .conteudo-title {
-    color: black
+        color: red;
+     display: flex;
+    flex-direction: row;
+    justify-content:center;
 }
 
+.conteudo-title span {
+   color: #2b428c;
+}
+
+/*CONTATOS ---------------------------------------------------------------*/
 .posicao-titulo {
     display: flex;
     flex-direction: row;
@@ -205,12 +212,79 @@ body {
     align-items:center;
 }
 
-.conteudo-bobia {
+.caixa_conteudo_contatos {
+       display: flex;
+    flex-direction: column;
+    align-items: center;
+   background-color: white;
+   width: 90%;
+   margin-left: 5%;
+   border-radius: 25px;
+   height: 400px;
+}
+
+/*CONTATOS ------------------------------------------------------------------------*/
+
+.btn-adm {
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 14px;
+    background: #6785FF;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+    margin-top: 8px;
+}
+
+.btn-adm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(103, 133, 255, 0.25);
+    background: #5574f6;
+}
+/* BOB IA ---------------------------------------------------------------------------------------*/
+/*.conteudo-bobia {
     margin-left: 5vw;
     margin-right: 2vw;
     padding: 20px;
     width: 100%;
     background-color: white;
     border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}*/
+
+
+.container_bobia {
+   display: flex;
+    flex-direction: row;
+    justify-content:center;
 }
+
+.resposta_ia {
+     display: flex;
+    flex-direction: row;
+    justify-content:center;
+}
+
+.caixa_conteudo {
+       display: flex;
+    flex-direction: column;
+    align-items: center;
+   
+   background-color: white;
+   width: 50%;
+   margin-left: 25%;
+   border-radius: 25px;
+   height: 400px;
+}
+
+.caixa_pergunta {
+    border-radius: 5px;
+     font-family: 'Space Grotesk', Arial, sans-serif;
+}
+
 

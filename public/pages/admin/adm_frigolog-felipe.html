@@ -58,17 +58,30 @@
         </div>
     </div>
 
-    <div class="conteudo-bobia" id="bob_ia">
-        <h1 class="conteudo-title">Bob IA</h1>
+    <!-- BOB IA -->
+    <div class="conteudo" id="bob_ia">
+        <div class="caixa_conteudo">
+            <div>
+                <h1 class="conteudo-title"><span>Bob</span> IA</h1>
+            </div>
 
-        <div class="container_bobia">
-            <textarea id="pergunta" type="text" placeholder="Digite a pergunta..."></textarea>
-            <br><br>
-            <button onclick="gerarResposta()">Gerar Resposta</button>
-            <h3>Resposta da IA:</h3>
-            <div id="resposta"></div>
+            <div class="container_bobia">
+                <textarea class="caixa_pergunta" id="pergunta" type="text"
+                    placeholder="Digite a pergunta..."></textarea>
+                <br><br>
+            </div>
+
+            <div class="resposta_ia">
+                <button class="btn-adm" onclick="gerarResposta()">Gerar Resposta</button>
+            </div>
+
+            <div class="resposta_ia">
+                <h3>Resposta da IA:</h3>
+                <div id="resposta"></div>
+            </div>
         </div>
     </div>
+    <!-- BOB IA -->
 
     <div class="conteudo" id="inicio">
         <h1 class="conteudo-title">Início</h1>
@@ -76,23 +89,26 @@
 
 
     <div class="conteudo" id="mensagens">
-        <div class="titulo-subtitulo">
-            <div class="posicao-titulo">
-                <h1 class="conteudo-title">Contatos</h1>
-                <h2>15</h2>
-            </div>
+        <div class="caixa_conteudo_contatos">
+
             <div>
-                <h4>Empresas que contataram via site institucional</h4>
+                <h1 class="conteudo-title"><span>Contatos</span></h1>
             </div>
-            <div class="inicio-mensagens">
-                <div>Nome</div>
-                <div>Empresa</div>
-                <div>Origem</div>
-                <div>Data do chamado</div>
-            </div>
-            <div id="mensagens_mostradas">
-                
-            </div>
+
+                <div>
+                    <h4>Empresas que contataram via site institucional</h4>
+                </div>
+
+                <div class="inicio-mensagens">
+                    <div>Nome</div>
+                    <div>Empresa</div>
+                    <div>Origem</div>
+                    <div>Data do chamado</div>
+                </div>
+
+                <div id="mensagens_mostradas"></div>
+            
+
         </div>
     </div>
 
