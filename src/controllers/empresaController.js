@@ -28,6 +28,13 @@ async function cadastrar(req, res) {
         res.status(400).send("A cnpj está undefined!")
     } else {
 
+        let resultadoCnpj = await empresaModel.verificarCnpj(cnpj);
+        
+        if (resultadoCnpj[0].qtdCnpj > 0) {
+            res.status(400).send("CNPJ já cadastrado!");
+            return;
+        }
+
         let codigoValido = false
         let codigo = ""
 
@@ -43,14 +50,14 @@ async function cadastrar(req, res) {
             console.log('Código gerado: ', codigo)
 
             let resultado = await empresaModel.verificarCodigoCadastro(codigo)
-            if(resultado[0].qtdEmpresa == 0){
+            if (resultado[0].qtdEmpresa == 0) {
                 codigoValido = true
                 console.log('Código válido')
-                break; 
-            }else{
+                break;
+            } else {
                 console.log("Código inválido, tentando novamente")
             }
-            
+
         }
 
         empresaModel.cadastrar(razaoSocial, cnpj, codigo)
@@ -59,7 +66,7 @@ async function cadastrar(req, res) {
                     empresa_id: resultado.insertId,
                     codigo_empresa: codigo
                 });
-                
+
             })
             .catch(function (erro) {
                 console.log("\nHouve erro ao cadastrar empresa! ERRO: ", erro.sqlMessage);

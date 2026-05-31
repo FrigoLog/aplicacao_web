@@ -22,6 +22,11 @@ function cadastrar(razaoSocial, cnpj, codigoCadastro) {
     
 }
 
+function verificarCnpj(cnpj){
+    var instrucaoSql = `SELECT COUNT(*) AS qtdCnpj FROM empresa WHERE cnpj = '${cnpj}'`
+    return database.executar(instrucaoSql)
+}
+
 function verificarCodigoCadastro(codigoCadastro){
     
     var instrucaoSql = `SELECT COUNT(*) AS qtdEmpresa FROM empresa WHERE codigo_cadastro = '${codigoCadastro}'`
@@ -61,5 +66,6 @@ module.exports = {
     cadastrar,
     verificarCodigoCadastro,
     listarAmbientes,
-    listarPOs
+    listarPOs,
+    verificarCnpj
 };
