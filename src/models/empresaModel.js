@@ -10,11 +10,14 @@ function listar() {
     return database.executar(instrucaoSql);
 }
 
-function cadastrar(razaoSocial, cnpj, codigoCadastro) {
+function cadastrar(razaoSocial, cnpj, codigoCadastro, cep, numero) {
     console.log("Acessei o empresaModel - cadastrar");
 
     var instrucaoSql = `INSERT INTO empresa (razao_social, cnpj, codigo_cadastro)
-        VALUES ('${razaoSocial}', '${cnpj}', '${codigoCadastro}')`;
+        VALUES ('${razaoSocial}', '${cnpj}', '${codigoCadastro}');
+
+        INSERT INTO endereco (cep, numero) 
+        VALUES ('${cep}', '${numero}');`
 
         console.log("Executando a instrução SQL: \n" + instrucaoSql);
         

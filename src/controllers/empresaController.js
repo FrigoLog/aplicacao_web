@@ -20,13 +20,19 @@ async function cadastrar(req, res) {
 
     var razaoSocial = req.body.razaoSocialServer;
     var cnpj = req.body.cnpjServer;
+    var cep = req.body.cepServer;
+    var numero = req.body.numeroServer;
 
 
     if (razaoSocial == undefined) {
         res.status(400).send("A Razão social está undefined!")
     } else if (cnpj == undefined) {
-        res.status(400).send("A cnpj está undefined!")
-    } else {
+        res.status(400).send("O cnpj está undefined!")
+    } else if (cep == undefined) {
+        res.status(400).send("O cep está undefined!")
+    }else if (numero == undefined) {
+        res.status(400).send("O numero está undefined!")
+    }else {
 
         let resultadoCnpj = await empresaModel.verificarCnpj(cnpj);
         
@@ -60,7 +66,7 @@ async function cadastrar(req, res) {
 
         }
 
-        empresaModel.cadastrar(razaoSocial, cnpj, codigo)
+        empresaModel.cadastrar(razaoSocial, cnpj, codigo, cep, numero)
             .then(function (resultado) {
                 res.json({
                     empresa_id: resultado.insertId,

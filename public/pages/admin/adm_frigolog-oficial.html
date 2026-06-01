@@ -100,10 +100,11 @@
             </div>
 
             <div class="inicio-mensagens">
-                <div>Nome</div>
-                <div>Empresa</div>
-                <div>Origem</div>
-                <div>Data do chamado</div>
+                <div>Nome Empresa</div>
+                <div>Email para contato</div>
+                <div>Telefone para contato</div>
+                <div>Data de envio</div>
+
             </div>
 
             <div id="mensagens_mostradas"></div>
@@ -152,6 +153,24 @@
                 <input type="text" id="ipt_cnpj" placeholder="XX.XXX.XXX/XXXX-XX">
             </div>
 
+            <label for="ipt_cep" class="label-form">
+                CEP:
+            </label>
+
+            <div class="input-box">
+                <i class="bx bx-envelope icone-esquerda"></i>
+                <input type="text" id="ipt_cep" placeholder="XXXXX-XXX">
+            </div>
+
+            <label for="ipt_numero" class="label-form">
+                Número:
+            </label>
+
+            <div class="input-box">
+                <i class="bx bx-envelope icone-esquerda"></i>
+                <input type="text" id="ipt_numero" placeholder="ex: 100">
+            </div>
+
             <label for="ipt_codigo" class="label-form">
                 Código da empresa:
             </label>
@@ -183,58 +202,10 @@
 </body>
 <script>
 
-    //aquii
-
-    function cadastrar() {
-        var razaoSocial = ipt_razao_social.value;
-        var cnpj = ipt_cnpj.value;
-        var erro = document.getElementById("erro");
-        var sucesso = document.getElementById("sucesso");
-
-        erro.innerHTML = "";
-        sucesso.innerHTML = "";
-
-        if (
-            razaoSocial == "" ||
-            cnpj == ""
-        ) {
-            erro.innerHTML = "Há campos em branco. Por favor, preencha todos os dados.";
-            return false;
-        }
-
-
-        fetch("/empresas/cadastrar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                razaoSocialServer: razaoSocial,
-                cnpjServer: cnpj,
-            }),
-        })
-            .then(function (resposta) {
-                console.log("resposta: ", resposta);
-
-                if (resposta.ok) {
-                    resposta.json().then(function (dados) {
-                        document.getElementById("codigo_gerado").innerHTML = dados.codigo_empresa;
-                        sucesso.innerHTML = "Cadastro realizado!";
-                    });
-                } else {
-                    resposta.text().then(texto => {
-                        erro.innerHTML = "Erro ao cadastrar: " + texto;
-                    });
-                }
-            })
-            .catch(function (err) {
-                console.log(`#ERRO: ${err}`);
-                erro.innerHTML = "Erro de conexão com o servidor.";
-            });
-
-        return false;
+    window.onload = function () {
+        carregarMensagens()
     }
-    
+
     //carrega inicialmente com a tela inicio:
     alterarConteudo('inicio');
     function alterarConteudo(id_conteudo) {
@@ -265,27 +236,121 @@
         document.getElementById('resposta').innerText = data.resultado;
     }
 
-    carregarMensagens()
+
     function carregarMensagens() {
+
+        fetch('/contatoRoutes/mensagensContatos')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarMensagens(resposta);
+
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+    }
+
+    function plotarMensagens(resposta) {
+
+        console.log(resposta)
+
+        var ultimasMensagens = []
+        for (i = 0; i < resposta.length; i++) {
+            ultimasMensagens.push(resposta[i]);
+        }
+        console.log(ultimasMensagens);
+
+
+
         mensagens_mostradas.innerHTML = `
         <div class="posicao-mensagens">
+
 <div class="inicio-mensagens">
-        <div>Luiz Phelipe</div>
-                <div>Seaara</div>
-                <div>Site institucional</div>
-                <div>25/05/2026</div>
+        <div>${ultimasMensagens[0].nome_empresa}</div>
+                <div>${ultimasMensagens[0].email}</div>
+                <div>${ultimasMensagens[0].telefone}</div>
+                <div>${ultimasMensagens[0].data_mensagem}</div>
                 </div>
 
                 <div class="inicio-mensagens">
-                 <div>Luiz Phelipe</div>
-                <div>Seaara</div>
-                <div>Site institucional</div>
-                <div>25/05/2026</div>
+                 <div>${ultimasMensagens[1].nome_empresa}</div>
+                <div>${ultimasMensagens[1].email}</div>
+                <div>${ultimasMensagens[1].telefone}</div>
+                <div>${ultimasMensagens[1].data_mensagem}</div>  
                 </div>
- </div>
- 
- 
- `
+
+                <div class="inicio-mensagens">
+                 <div>${ultimasMensagens[2].nome_empresa}</div>
+                <div>${ultimasMensagens[2].email}</div>
+                <div>${ultimasMensagens[2].telefone}</div>
+                <div>${ultimasMensagens[2].data_mensagem}</div>  
+                </div>
+
+                
+ </div>`}
+
+
+    function cadastrar() {
+        var razaoSocial = ipt_razao_social.value;
+        var cnpj = ipt_cnpj.value;
+        var cep = ipt_cep.value;
+        var numero = ipt_numero.value;
+        var erro = document.getElementById("erro");
+        var sucesso = document.getElementById("sucesso");
+
+        erro.innerHTML = "";
+        sucesso.innerHTML = "";
+
+        if (
+            razaoSocial == "" ||
+            cnpj == "" ||
+            cep == "" ||
+            numero == ""
+        ) {
+            erro.innerHTML = "Há campos em branco. Por favor, preencha todos os dados.";
+            return false;
+        }
+
+
+        fetch("/empresas/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                razaoSocialServer: razaoSocial,
+                cnpjServer: cnpj,
+                cepServer: cep,
+                numeroServer: numero
+            }),
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok) {
+                    resposta.json().then(function (dados) {
+                        document.getElementById("codigo_gerado").innerHTML = dados.codigo_empresa;
+                        sucesso.innerHTML = "Cadastro realizado!";
+                    });
+                } else {
+                    resposta.text().then(texto => {
+                        erro.innerHTML = "Erro ao cadastrar: " + texto;
+                    });
+                }
+            })
+            .catch(function (err) {
+                console.log(`#ERRO: ${err}`);
+                erro.innerHTML = "Erro de conexão com o servidor.";
+            });
+
+        return false;
     }
 
 
