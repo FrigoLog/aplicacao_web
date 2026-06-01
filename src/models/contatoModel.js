@@ -17,7 +17,8 @@ function carregarMensagens() {
     SELECT
     nome_empresa,
     email,
-    telefone
+    telefone,
+    data_mensagem
     FROM contato;
     `;
 
