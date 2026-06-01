@@ -48,7 +48,8 @@
     <div class="conteudo-geral">
         <div class="subconteudo" id="conteudoAmbientes">
             <h1 class="conteudo-title">Selecione uma unidade para analisar os Pontos Operacionais</h1>
-
+            <input type="text" id="ipt_busca" placeholder="Buscar o nome de um ambiente..."
+                oninput="filtrarAmbientes()">
             <div class="unidade-list" id="id_lista_ambientes">
 
             </div>
@@ -57,7 +58,8 @@
         <div class="subconteudo" id="conteudoPO">
             <button onclick="listarAmbientes()">Voltar</button>
             <h1 class="conteudo-title">Selecione um PO para ver detalhes </h1>
-
+            <input type="text" id="ipt_busca_po" placeholder="Buscar o nome de um Ponto Operacional..."
+                oninput="filtrarPO()">
             <div class="unidade-list" id="id_lista_po">
 
             </div>
@@ -65,21 +67,30 @@
     </div>
 </body>
 <script>
+    let ambientes = [];
+    let pos = [];
+
     listarAmbientes()
     async function listarAmbientes() {
         conteudoPO.style.display = "none";
         id_lista_ambientes.innerHTML = ``;
-        let ambientes = [];
+
 
         let resposta = await fetch(`/empresas/listarAmbientes/${sessionStorage.ID_EMPRESA}`)
         ambientes = await resposta.json()
         console.log(ambientes);
 
-        for (let i = 0; i < ambientes.length; i++) {
+        renderizarAmbientes(ambientes);
+    }
+
+    function renderizarAmbientes(lista) {
+        id_lista_ambientes.innerHTML = ``;
+
+        for (let i = 0; i < lista.length; i++) {
             let ambiente_card = `
-            <div class="kpi-card" style="cursor: pointer;" onclick="abrirPO(${ambientes[i].id_ambiente})">
-                <span>${ambientes[i].nome}</span>
-                <span>CEP: ${ambientes[i].cep} | N°: ${ambientes[i].numero}</span>
+            <div class="kpi-card" style="cursor: pointer;" onclick="abrirPO(${lista[i].id_ambiente})">
+                <span>${lista[i].nome}</span>
+                <span>CEP: ${lista[i].cep} | N°: ${lista[i].numero}</span>
             </div>
             `;
 
@@ -89,20 +100,42 @@
         conteudoAmbientes.style.display = "block";
     }
 
+    function filtrarAmbientes() {
+        let nome_ipt = ipt_busca.value;
+        let ambientes_filtrados = [];
+
+        for (let i = 0; i < ambientes.length; i++) {
+            if (ambientes[i].nome.toLowerCase().includes(nome_ipt.toLowerCase())) {
+                ambientes_filtrados.push(ambientes[i]);
+            }
+
+        }
+
+        renderizarAmbientes(ambientes_filtrados);
+
+    }
+
     async function abrirPO(id_ambiente) {
         conteudoAmbientes.style.display = "none";
 
         id_lista_po.innerHTML = ``;
-        let pos = [];
+
 
         let resposta = await fetch(`/empresas/listarPOs/${id_ambiente}`)
         pos = await resposta.json()
         console.log(pos);
 
+        renderizarPO(pos);
+
+    }
+
+    function renderizarPO(listaPO) {
+        id_lista_po.innerHTML = ``;
+
         for (let i = 0; i < pos.length; i++) {
             let po_card = `
-            <div class="kpi-card" style="cursor: pointer;" onclick="detalharPO(${pos[i].id_po})">
-                <span>${pos[i].nome}</span>
+            <div class="kpi-card" style="cursor: pointer;" onclick="detalharPO(${listaPO[i].id_po})">
+                <span>${listaPO[i].nome}</span>
             </div>
             `;
 
@@ -111,6 +144,22 @@
 
 
         conteudoPO.style.display = "block";
+    }
+
+
+    function filtrarPO() {
+        let nome_ipt = ipt_busca_po.value;
+        let pos_filtrados = [];
+
+        for (let i = 0; i < pos.length; i++) {
+            if (pos[i].nome.toLowerCase().includes(nome_ipt.toLowerCase())) {
+                pos_filtrados.push(pos[i]);
+            }
+
+        }
+
+        renderizarPO(pos_filtrados);
+
     }
 
 
