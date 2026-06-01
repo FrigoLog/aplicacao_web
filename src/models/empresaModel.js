@@ -64,11 +64,27 @@ function listarPOs(idAmbiente) {
     
 }
 
+function carregarEmpresas() {
+
+    var instrucao = `
+    SELECT
+    razao_social,
+    cnpj,
+    codigo_cadastro
+    FROM empresa;
+    `;
+
+    console.log("executando a instrução sql: \n" + instrucao);
+
+    return database.executar(instrucao);
+}
+
 module.exports = {
     listar,
     cadastrar,
     verificarCodigoCadastro,
     listarAmbientes,
     listarPOs,
-    verificarCnpj
+    verificarCnpj,
+    carregarEmpresas
 };
