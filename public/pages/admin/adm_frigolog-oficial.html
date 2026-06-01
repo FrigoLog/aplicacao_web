@@ -99,12 +99,11 @@
                 <h4>Empresas que contataram via site institucional</h4>
             </div>
 
-            <div class="inicio-mensagens">
+            <div class="inicio-mensagens cabecalho-tabela">
                 <div>Nome Empresa</div>
                 <div>Email para contato</div>
                 <div>Telefone para contato</div>
                 <div>Data de envio</div>
-
             </div>
 
             <div id="mensagens_mostradas"></div>
@@ -193,24 +192,20 @@
     </div>
 
     <div class="conteudo" id="empresas_cadastradas">
-        <h1 class="conteudo-title">Empresas cadastradas</h1>
 
         <div class="caixa_conteudo_contatos">
 
             <div>
-                <h1 class="conteudo-title"><span>Contatos</span></h1>
+                <h1 class="conteudo-title"><span>Empresas Cadastradas</span></h1>
             </div>
-
             <div>
-                <h4>Empresas que contataram via site institucional</h4>
+                <h4>Empresas cadastradas na FRIGOLOG</h4>
             </div>
 
-            <div class="inicio-mensagens">
+            <div class="inicio-mensagens cabecalho-tabela">
                 <div>Nome Empresa</div>
-                <div>Email para contato</div>
-                <div>Telefone para contato</div>
-                <div>Data de envio</div>
-
+                <div>CNPJ</div>
+                <div>Código Empresa</div>
             </div>
 
             <div id="empresasCadastradas"></div>
@@ -227,7 +222,7 @@
 
     window.onload = function () {
         carregarMensagens(),
-        carregarEmpresas()
+            carregarEmpresas()
     }
 
     //carrega inicialmente com a tela inicio:
