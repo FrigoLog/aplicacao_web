@@ -1,10 +1,10 @@
 var database = require("../database/config")
 
-function contato(nome_empresa, email, telefone){
+function contato(nome_empresa, email, telefone, data_mensagem){
     console.log("Acessei o usuario Model");
 
-    var instrucaoSql = `insert into contato(nome_empresa, email, telefone) values ('${nome_empresa}', '${email}', '${telefone}')
-    `;
+    var instrucaoSql = `insert into contato(nome_empresa, email, telefone, data_mensagem) values ('${nome_empresa}', '${email}', '${telefone}', NOW());
+    `
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
     return database.executar(instrucaoSql);

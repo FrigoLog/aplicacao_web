@@ -271,7 +271,6 @@
                 <a href="#">Home</a>
                 <a href="#sobre">Sobre nós</a>
                 <a href="#simulador">Simulador</a>
-                <a href="./pages/admin/adm_frigolog-oficial.html">Cadastro Empresa</a>
             </div>
 
             <div class="footer-col">
@@ -292,6 +291,9 @@
         var emailInserido = ipt_email.value;
         var telefoneInserido = ipt_telefone.value;
 
+        erro.innerHTML = ""
+        sucesso.innerHTML = ""
+
         if (
                 nomeEmpresaInserido == "" ||
                 emailInserido == "" ||
@@ -301,7 +303,7 @@
                 return false;
             }
 
-            fetch("/contato", {
+            fetch("/contatoRoutes/contato", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
