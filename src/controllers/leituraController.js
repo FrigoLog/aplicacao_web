@@ -46,9 +46,22 @@ function buscarNaoConformidade(req, res) {
     });
 }
 
+function gerarAlerta(req, res) {
+    const id_empresa = req.params.idEmpresa;
+
+    leituraModel.gerarAlerta(id_empresa).then(function (resultado) {
+        res.status(200).json(resultado);
+    }).catch(function (erro) {
+        console.log(erro);
+        console.log("Houve um erro ao buscar as ultimas leituras.", erro.sqlMessage);
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
 module.exports = {
     buscarUltimasLeituras,
     buscarConformidade,
-    buscarNaoConformidade
+    buscarNaoConformidade,
+    gerarAlerta
 
 }

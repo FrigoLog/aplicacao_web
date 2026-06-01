@@ -56,8 +56,10 @@
         </div>
 
         <div class="subconteudo" id="conteudoPO">
-            <button onclick="listarAmbientes()">Voltar</button>
-            <h1 class="conteudo-title">Selecione um PO para ver detalhes </h1>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h1 class="conteudo-title">Selecione um PO para ver detalhes </h1>
+                <button onclick="listarAmbientes()">Voltar</button>
+            </div>
             <input type="text" id="ipt_busca_po" placeholder="Buscar o nome de um Ponto Operacional..."
                 oninput="filtrarPO()">
             <div class="unidade-list" id="id_lista_po">
