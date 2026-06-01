@@ -35,7 +35,7 @@ app.use("/usuarios", usuarioRouter);
 app.use("/empresas", empresaRouter);
 app.use("/leituras", leituraRouter)
 app.use("/bobia", bobiaRouter)
-app.use('/', contatoRouter);
+app.use('/contatoRoutes', contatoRouter);
 
 // APP USE ROUTERS FRIGOLOG
 

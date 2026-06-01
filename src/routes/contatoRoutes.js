@@ -7,4 +7,8 @@ router.post("/contato", function (req, res) {
     contatoController.contato(req, res);
 });
 
+router.get("/mensagensContatos", function (req, res) {
+    contatoController.carregarMensagens(req, res);
+});
+
 module.exports = router;

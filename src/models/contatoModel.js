@@ -11,6 +11,22 @@ function contato(nome_empresa, email, telefone){
     
 }
 
+function carregarMensagens() {
+
+    var instrucao = `
+    SELECT
+    nome_empresa,
+    email,
+    telefone
+    FROM contato;
+    `;
+
+    console.log("executando a instrução sql: \n" + instrucao);
+
+    return database.executar(instrucao);
+}
+
 module.exports = {
-    contato
+    contato,
+    carregarMensagens
 }

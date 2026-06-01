@@ -100,10 +100,11 @@
                 </div>
 
                 <div class="inicio-mensagens">
-                    <div>Nome</div>
-                    <div>Empresa</div>
-                    <div>Origem</div>
-                    <div>Data do chamado</div>
+                    <div>Nome Empresa</div>
+                    <div>Email para contato</div>
+                    <div>Telefone para contato</div>
+                    <div>Data de envio</div>
+                    
                 </div>
 
                 <div id="mensagens_mostradas"></div>
@@ -124,6 +125,11 @@
     </div>
 </body>
 <script>
+
+ window.onload = function () {
+      carregarMensagens()
+      }
+
     //carrega inicialmente com a tela inicio:
     alterarConteudo('inicio');
     function alterarConteudo(id_conteudo) {
@@ -154,30 +160,65 @@
         document.getElementById('resposta').innerText = data.resultado;
     }
 
-    carregarMensagens()
+  
     function carregarMensagens() {
+
+        fetch('/contatoRoutes/mensagensContatos')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarMensagens(resposta);
+
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+    }
+
+    function plotarMensagens(resposta) {
+
+        console.log(resposta)
+
+var ultimasMensagens = []
+        for (i = 0; i < resposta.length; i++) {
+           ultimasMensagens.push(resposta[i]);
+           }
+           console.log(ultimasMensagens);
+           
+
+
         mensagens_mostradas.innerHTML = `
         <div class="posicao-mensagens">
+
 <div class="inicio-mensagens">
-        <div>Luiz Phelipe</div>
-                <div>Seaara</div>
-                <div>Site institucional</div>
+        <div>${ultimasMensagens[0].nome_empresa}</div>
+                <div>${ultimasMensagens[0].email}</div>
+                <div>${ultimasMensagens[0].telefone}</div>
                 <div>25/05/2026</div>
                 </div>
 
                 <div class="inicio-mensagens">
-                 <div>Luiz Phelipe</div>
-                <div>Seaara</div>
-                <div>Site institucional</div>
+                 <div>${ultimasMensagens[1].nome_empresa}</div>
+                <div>${ultimasMensagens[1].email}</div>
+                <div>${ultimasMensagens[1].telefone}</div>
                 <div>25/05/2026</div>
                 </div>
- </div>
- 
- 
- `
-    }
 
+                <div class="inicio-mensagens">
+                 <div>${ultimasMensagens[2].nome_empresa}</div>
+                <div>${ultimasMensagens[2].email}</div>
+                <div>${ultimasMensagens[2].telefone}</div>
+                <div>25/05/2026</div>
+                </div>
+
+                
+ </div>`}
 
 </script>
-
 </html>
