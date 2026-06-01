@@ -268,33 +268,17 @@
         console.log(ultimasMensagens);
 
 
-
-        mensagens_mostradas.innerHTML = `
+        for (let i = 0; i < ultimasMensagens.length; i++) {
+            mensagens_mostradas.innerHTML += `
         <div class="posicao-mensagens">
-
-<div class="inicio-mensagens">
-        <div>${ultimasMensagens[0].nome_empresa}</div>
-                <div>${ultimasMensagens[0].email}</div>
-                <div>${ultimasMensagens[0].telefone}</div>
-                <div>${ultimasMensagens[0].data_mensagem}</div>
-                </div>
-
-                <div class="inicio-mensagens">
-                 <div>${ultimasMensagens[1].nome_empresa}</div>
-                <div>${ultimasMensagens[1].email}</div>
-                <div>${ultimasMensagens[1].telefone}</div>
-                <div>${ultimasMensagens[1].data_mensagem}</div>  
-                </div>
-
-                <div class="inicio-mensagens">
-                 <div>${ultimasMensagens[2].nome_empresa}</div>
-                <div>${ultimasMensagens[2].email}</div>
-                <div>${ultimasMensagens[2].telefone}</div>
-                <div>${ultimasMensagens[2].data_mensagem}</div>  
-                </div>
-
-                
- </div>`}
+        <div class="inicio-mensagens">
+        <div>${ultimasMensagens[i].nome_empresa}</div>
+                <div>${ultimasMensagens[i].email}</div>
+                <div>${ultimasMensagens[i].telefone}</div>
+                <div>${ultimasMensagens[i].data_mensagem}</div>
+                </div>`
+        }       
+}
 
 
     function cadastrar() {
