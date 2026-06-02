@@ -18,7 +18,7 @@ function carregarMensagens() {
     nome_empresa,
     email,
     telefone,
-    data_mensagem
+    DATE_FORMAT(data_mensagem, '%d/%m/%Y') AS data_mensagem
     FROM contato;
     `;
 

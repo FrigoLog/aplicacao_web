@@ -99,12 +99,11 @@
                 <h4>Empresas que contataram via site institucional</h4>
             </div>
 
-            <div class="inicio-mensagens">
+            <div class="inicio-mensagens cabecalho-tabela">
                 <div>Nome Empresa</div>
                 <div>Email para contato</div>
                 <div>Telefone para contato</div>
                 <div>Data de envio</div>
-
             </div>
 
             <div id="mensagens_mostradas"></div>
@@ -193,7 +192,26 @@
     </div>
 
     <div class="conteudo" id="empresas_cadastradas">
-        <h1 class="conteudo-title">Empresas cadastradas</h1>
+
+        <div class="caixa_conteudo_contatos">
+
+            <div>
+                <h1 class="conteudo-title"><span>Empresas Cadastradas</span></h1>
+            </div>
+            <div>
+                <h4>Empresas cadastradas na FRIGOLOG</h4>
+            </div>
+
+            <div class="inicio-mensagens cabecalho-tabela">
+                <div>Nome Empresa</div>
+                <div>CNPJ</div>
+                <div>Código Empresa</div>
+            </div>
+
+            <div id="empresasCadastradas"></div>
+
+
+        </div>
     </div>
 
     <div class="conteudo" id="usuarios_clientes">
@@ -203,7 +221,8 @@
 <script>
 
     window.onload = function () {
-        carregarMensagens()
+        carregarMensagens(),
+            carregarEmpresas()
     }
 
     //carrega inicialmente com a tela inicio:
@@ -277,8 +296,52 @@
                 <div>${ultimasMensagens[i].telefone}</div>
                 <div>${ultimasMensagens[i].data_mensagem}</div>
                 </div>`
-        }       
-}
+        }
+    }
+
+    // Empresas cadastradas
+
+    function carregarEmpresas() {
+
+        fetch('/empresas/empresasCadastradas')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarEmpresas(resposta);
+
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+    }
+
+    function plotarEmpresas(resposta) {
+
+        console.log(resposta)
+
+        var ultimasMensagens = []
+        for (i = 0; i < resposta.length; i++) {
+            ultimasMensagens.push(resposta[i]);
+        }
+        console.log(ultimasMensagens);
+
+
+        for (let i = 0; i < ultimasMensagens.length; i++) {
+            empresasCadastradas.innerHTML += `
+        <div class="posicao-mensagens">
+        <div class="inicio-mensagens">
+                <div>${ultimasMensagens[i].razao_social}</div>
+                <div>${ultimasMensagens[i].cnpj}</div>
+                <div>${ultimasMensagens[i].codigo_cadastro}</div>
+                </div>`
+        }
+    }
 
 
     function cadastrar() {

@@ -171,57 +171,117 @@ body {
 }
 
 .conteudo-title {
-        color: red;
-     display: flex;
+    color: red;
+    display: flex;
     flex-direction: row;
     justify-content:center;
 }
 
 .conteudo-title span {
    color: #2b428c;
+   font-size: 30px;
 }
 
-/*CONTATOS ---------------------------------------------------------------*/
-.posicao-titulo {
-    display: flex;
-    flex-direction: row;
-    justify-content:center;
-}
+/* TABELA CONTATOS E EMPRESAS CADASTRADAS ----------------------------------------*/
 
-.titulo-subtitulo {
+.caixa_conteudo_contatos {
+    background-color: white;
+    width: 90%;
+    margin-left: 5%;
+    border-radius: 16px;
+    padding: 24px;
+    height: auto;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+}
+
+.caixa_conteudo_contatos h1 {
+    font-size: 20px;
+    color: #0b1533;
+    margin-bottom: 4px;
+}
+
+.caixa_conteudo_contatos h4 {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 16px;
+    font-weight: 400;
 }
 
 .inicio-mensagens {
-     display: flex;
-    flex-direction: row;
-    justify-content:space-between;
-    gap: 100px;
-     margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr;
+    gap: 12px;
+    padding: 10px 16px;
+    align-items: center;
+    width: 100%;
+}
+
+.cabecalho-tabela {
+    background-color: #0b1533;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr;
+    gap: 12px;
+    padding: 10px 16px;
+    align-items: center;
+    width: 100%;
 }
 
 .posicao-mensagens {
     display: flex;
     flex-direction: column;
-    align-items:center;
-   
-
+    align-items: stretch;
+    width: 100%;
 }
 
-.caixa_conteudo_contatos {
-       display: flex;
+.posicao-mensagens .inicio-mensagens {
+    font-size: 14px;
+    color: #0b1533;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-top: 6px;
+}
+
+.posicao-mensagens .inicio-mensagens:hover {
+    background-color: #f9fafb;
+    cursor: pointer;
+}
+
+/* BOB IA ----------------------------------------*/
+
+.container_bobia {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.resposta_ia {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.caixa_conteudo {
+    display: flex;
     flex-direction: column;
     align-items: center;
-   background-color: white;
-   width: 90%;
-   margin-left: 5%;
-   border-radius: 25px;
-   height: 400px;
+    background-color: white;
+    width: 50%;
+    margin-left: 25%;
+    border-radius: 25px;
+    height: 400px;
 }
 
-/*CONTATOS ------------------------------------------------------------------------*/
+.caixa_pergunta {
+    border-radius: 5px;
+    font-family: 'Space Grotesk', Arial, sans-serif;
+}
 
 .btn-adm {
     width: 100px;
@@ -242,50 +302,22 @@ body {
     box-shadow: 0 10px 20px rgba(103, 133, 255, 0.25);
     background: #5574f6;
 }
-/* BOB IA ---------------------------------------------------------------------------------------*/
-/*.conteudo-bobia {
-    margin-left: 5vw;
-    margin-right: 2vw;
-    padding: 20px;
-    width: 100%;
-    background-color: white;
-    border-radius: 5px;
+
+/* CADASTRO EMPRESA ----------------------------------------*/
+
+.titulo-cadastroEmpresa {
+    font-size: 20px;
     display: flex;
-    flex-direction: row;
+    gap: 8px;
     justify-content: center;
-}*/
-
-
-.container_bobia {
-   display: flex;
-    flex-direction: row;
-    justify-content:center;
+    margin-top: 40px;
+    margin-bottom: 0;
+    background-color: white;
+    width: 430px;
+    margin: 40px auto 0;
+    border-radius: 10px;
+    padding: 12px;
 }
-
-.resposta_ia {
-     display: flex;
-    flex-direction: row;
-    justify-content:center;
-}
-
-.caixa_conteudo {
-       display: flex;
-    flex-direction: column;
-    align-items: center;
-   
-   background-color: white;
-   width: 50%;
-   margin-left: 25%;
-   border-radius: 25px;
-   height: 400px;
-}
-
-.caixa_pergunta {
-    border-radius: 5px;
-     font-family: 'Space Grotesk', Arial, sans-serif;
-}
-
-/* Cadastro empresas ------------------------------------------------------------------------*/
 
 .logo-row {
     display: flex;
@@ -394,4 +426,7 @@ body {
     background: #fff;
 }
 
-
+#mensagens_mostradas,
+#empresasCadastradas {
+    width: 100%;
+}
