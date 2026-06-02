@@ -2,7 +2,7 @@ var database = require("../database/config");
 
 function buscarUltimasLeituras() {
 
-    var instrucaoSql = `SELECT * FROM vw_leituras_ponto_operacional;`;
+    var instrucaoSql = `SELECT * FROM vw_leituras_ponto_operacional`;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -10,9 +10,29 @@ function buscarUltimasLeituras() {
 
 function buscarConformidade(id_empresa) {
 
-    var instrucaoSql = `SELECT * FROM vw_conformidade_do_sistema WHERE id_empresa = ${id_empresa}`
+    var instrucaoSql = `
+        SELECT *
+        FROM vw_dash_conformidade_do_sistema
+        WHERE id_empresa = ${id_empresa}
+        AND hora >= DATE_FORMAT(
+            DATE_SUB(NOW(), INTERVAL 21 HOUR),
+            '%Y-%m-%d %H:00'
+        )
+        ORDER BY hora;
+    `
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarKpiConformidade(id_empresa) {
+
+    var instrucaoSql = `
+        SELECT porcentagem
+        FROM vw_conformidade_do_sistema
+        WHERE id_empresa = ${id_empresa};
+    `;
+
     return database.executar(instrucaoSql);
 }
 
@@ -24,7 +44,75 @@ function buscarNaoConformidade(id_empresa) {
     return database.executar(instrucaoSql);
 }
 
+function buscarPontosCriticos(id_empresa) {
 
+    var instrucaoSql = `
+        SELECT quantidade
+        FROM vw_pontos_operacionais_criticos
+        WHERE id_empresa = ${id_empresa};
+    `;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function buscarStatusPontosOperacionais(id_empresa) {
+
+    var instrucaoSql = `
+        SELECT *
+        FROM vw_status_pontos_operacionais
+        WHERE id_empresa = ${id_empresa};
+    `;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+async function buscarAlertas24h(id_empresa) {
+
+    const sqlTotal = `
+        SELECT COALESCE(SUM(qtd_alertas), 0) AS total_alertas
+        FROM vw_alertas_24h
+        WHERE id_empresa = ${id_empresa};
+    `;
+
+    const sqlMaior = `
+        SELECT
+            ponto_operacional,
+            ambiente,
+            qtd_alertas
+        FROM vw_alertas_24h
+        WHERE id_empresa = ${id_empresa}
+        ORDER BY qtd_alertas DESC
+        LIMIT 1;
+    `;
+
+    const total = await database.executar(sqlTotal);
+    const maior = await database.executar(sqlMaior);
+
+    return {
+        total_alertas: total[0].total_alertas,
+        ponto_operacional: maior.length > 0 ? maior[0].ponto_operacional : '-',
+        ambiente: maior.length > 0 ? maior[0].ambiente : '-',
+        qtd_alertas_po: maior.length > 0 ? maior[0].qtd_alertas : 0
+    };
+}
+
+function buscarPontoMaisCritico(id_empresa) {
+
+    const instrucaoSql = `
+        SELECT *
+        FROM vw_ponto_operacional_mais_critico
+        WHERE id_empresa = ${id_empresa}
+        ORDER BY diferenca DESC
+        LIMIT 1;
+    `;
+
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+/*
 async function gerarAlerta(id_empresa) {
 
     var instrucaoSql = `SELECT COUNT(*) AS qtd_total_alertas FROM vw_alertas WHERE id_empresa = ${id_empresa};`
@@ -50,10 +138,15 @@ async function gerarAlerta(id_empresa) {
     return resultadoGeral;
 
 }
+*/
 
 module.exports = {
     buscarUltimasLeituras,
     buscarConformidade,
     buscarNaoConformidade,
-    gerarAlerta
+    buscarKpiConformidade,
+    buscarPontosCriticos,
+    buscarStatusPontosOperacionais,
+    buscarAlertas24h,
+    buscarPontoMaisCritico
 }

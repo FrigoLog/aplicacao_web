@@ -57,21 +57,27 @@
             <div class="kpi-card alerta">
                 <div class="kpi-bar"></div>
                 <h3>Pontos Operacionais Críticos</h3>
-                <p>2</p>
+                <p id="kpi_pontos_criticos">0</p>
             </div>
 
             <div class="kpi-card critico">
                 <div class="kpi-bar"></div>
                 <h3>Alertas nas Últimas 24h</h3>
-                <p>45</p>
-                <span>PO com mais alertas: Câmara Fria 2 (Ambiente 2)</span>
+                <p id="kpi_total_alertas">0</p>
+                <span id="kpi_po_alertas">-</span>
             </div>
 
             <div class="kpi-card critico">
                 <div class="kpi-bar"></div>
                 <h3>Ponto Operacional Mais Crítico</h3>
-                <p>Câmara Fria 2 (Ambiente 2)</p>
-                <span>+8°C acima do limite</span>
+
+                <p id="kpi_po_mais_critico">
+                    -
+                </p>
+
+                <span id="kpi_diferenca_critica">
+                    -
+                </span>
             </div>
         </div>
 
@@ -123,6 +129,9 @@
     const ID_EMPRESA = sessionStorage.ID_EMPRESA;
     plotarGrafico();
     kpiConformidade();
+    kpiPontosCriticos();
+    kpiAlertas24h();
+    kpiPontoMaisCritico();
 
     function logout() {
         window.location.href = "../../index.html"
@@ -142,15 +151,15 @@
 
     // Obtem a conformidade do sistema
     async function obterDadosConformidade() {
-        const response = await fetch(`/leituras/conformidade/${ID_EMPRESA}`, { cache: 'no-store' });
+
+        const response = await fetch(
+            `/leituras/conformidade/${ID_EMPRESA}`,
+            { cache: 'no-store' }
+        );
+
         const dadosjson = await response.json();
 
-        const dadosConformidade = [90, 85];
-        for (let i = 0; i < dadosjson.length; i++) {
-            dadosConformidade.push(Number(dadosjson[i].porcentagem));
-        }
-
-        return dadosConformidade;
+        return dadosjson;
     }
 
     async function obterDadosNaoConformidade() {
@@ -171,26 +180,74 @@
         return dadosNaoConformidade;
     }
 
+    async function obterStatusPontosOperacionais() {
+
+        const response = await fetch(
+            `/leituras/status_pos/${ID_EMPRESA}`,
+            { cache: 'no-store' }
+        );
+
+        return await response.json();
+    }
+
+    async function obterPontosCriticos() {
+
+        const response = await fetch(
+            `/leituras/pontos_criticos/${ID_EMPRESA}`,
+            { cache: 'no-store' }
+        );
+
+        return await response.json();
+    }
+
+    async function obterAlertas24h() {
+
+        const response = await fetch(
+            `/leituras/alertas24h/${ID_EMPRESA}`,
+            { cache: 'no-store' }
+        );
+
+        return await response.json();
+    }
+
+    async function obterPontoMaisCritico() {
+
+        const response = await fetch(
+            `/leituras/ponto_mais_critico/${ID_EMPRESA}`,
+            { cache: 'no-store' }
+        );
+
+        return await response.json();
+    }
+
     // Plota os gráficos
     async function plotarGrafico() {
-        const dadosConformidade = await obterDadosConformidade();
         const dadosNaoConformidade = await obterDadosNaoConformidade();
+        const dadosConformidade = await obterDadosConformidade();
+        const dadosStatus = await obterStatusPontosOperacionais();
+
+        const horas = [];
+        const conformidades = [];
+
+        for (let i = 0; i < dadosConformidade.length; i++) {
+            horas.push(
+                dadosConformidade[i].hora.slice(11, 16)
+            );
+
+            conformidades.push(
+                Number(dadosConformidade[i].conformidade)
+            );
+        }
 
         // Adiciona o gráfico de conformidade do sistema
         const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
         new Chart(ctxConformidade, {
             type: 'line',
             data: {
-                labels: [
-                    '00:00', '01:00', '02:00', '03:00', '04:00',
-                    '05:00', '06:00', '07:00', '08:00', '09:00',
-                    '10:00', '11:00', '12:00', '13:00', '14:00',
-                    '15:00', '16:00', '17:00', '18:00', '19:00',
-                    '20:00', '21:00'
-                ],
+                labels: horas,
                 datasets: [{
                     label: 'Conformidade (%)',
-                    data: dadosConformidade,
+                    data: conformidades,
 
                     borderColor: '#2ecc71',
 
@@ -201,8 +258,8 @@
                         }
                     },
 
-                    pointBackgroundColor: dadosConformidade.map(valor => corPorConformidade(valor)),
-                    pointBorderColor: dadosConformidade.map(valor => corPorConformidade(valor)),
+                    pointBackgroundColor: conformidades.map(valor => corPorConformidade(valor)),
+                    pointBorderColor: conformidades.map(valor => corPorConformidade(valor)),
 
                     pointRadius: 6,
                     pointHoverRadius: 8,
@@ -270,14 +327,74 @@
                 }
             }
         });
+
+        let normal = 0;
+        let alerta = 0;
+        let critico = 0;
+
+        for (let i = 0; i < dadosStatus.length; i++) {
+
+            if (dadosStatus[i].status_operacional == 'NORMAL') {
+                normal = Number(dadosStatus[i].quantidade);
+            }
+
+            if (dadosStatus[i].status_operacional == 'ALERTA') {
+                alerta = Number(dadosStatus[i].quantidade);
+            }
+
+            if (dadosStatus[i].status_operacional == 'CRITICO') {
+                critico = Number(dadosStatus[i].quantidade);
+            }
+        }
+
+        const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
+        new Chart(ctxStatusAmbientes, {
+            type: 'doughnut',
+            data: {
+                labels: ['Normal', 'Alerta', 'Crítico'],
+                datasets: [{
+                    label: "Status dos PO's",
+                    data: [normal, alerta, critico],
+                    backgroundColor: [
+                        '#2ecc71',
+                        '#f1c40f',
+                        '#e74c3c'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    async function obterKpiConformidade() {
+
+        const response = await fetch(
+            `/leituras/kpi_conformidade/${ID_EMPRESA}`,
+            { cache: 'no-store' }
+        );
+
+        return await response.json();
     }
 
     // Adiciona a porcentagem de conformidade do sistema na KPI de conformidade 
     async function kpiConformidade() {
-        const dadosConformidade = await obterDadosConformidade();
 
-        const ultima_conformidade = dadosConformidade[dadosConformidade.length - 1];
-        kpi_conformidade_do_sistema_porcentagem.innerHTML = `${ultima_conformidade}%`;
+        const resultado = await obterKpiConformidade();
+
+        const ultima_conformidade =
+            Number(resultado[0].porcentagem);
+
+        kpi_conformidade_do_sistema_porcentagem.innerHTML =
+            `${ultima_conformidade}%`;
 
         if (ultima_conformidade > 95) {
             kpi_card_conformidade.className = "kpi-card otimo";
@@ -290,34 +407,40 @@
         }
     }
 
+    async function kpiPontosCriticos() {
 
-    const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
+        const resultado = await obterPontosCriticos();
 
-    new Chart(ctxStatusAmbientes, {
-        type: 'doughnut',
-        data: {
-            labels: ['Normal', 'Alerta', 'Crítico'],
-            datasets: [{
-                label: "Status dos PO's",
-                data: [24, 1, 2],
-                backgroundColor: [
-                    '#2ecc71',
-                    '#f1c40f',
-                    '#e74c3c'
-                ],
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
+        kpi_pontos_criticos.innerHTML =
+            resultado[0].quantidade;
+    }
+
+    async function kpiAlertas24h() {
+
+        const dados = await obterAlertas24h();
+
+        kpi_total_alertas.innerHTML =
+            dados.total_alertas;
+
+        kpi_po_alertas.innerHTML =
+            `PO com mais alertas: ${dados.ponto_operacional} (${dados.ambiente})`;
+    }
+
+    async function kpiPontoMaisCritico() {
+
+        const dados = await obterPontoMaisCritico();
+
+        if (dados.length === 0) {
+            return;
         }
-    });
+
+        kpi_po_mais_critico.innerHTML =
+            `${dados[0].ponto_operacional}`;
+
+        kpi_diferenca_critica.innerHTML =
+            `${dados[0].diferenca}°C fora da faixa`;
+    }
+
 </script>
 
 </html>
