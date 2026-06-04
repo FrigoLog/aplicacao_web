@@ -51,7 +51,7 @@
             <div class="kpi-card otimo" id="kpi_card_conformidade">
                 <div class="kpi-bar"></div>
                 <h3>Conformidade do Sistema</h3>
-                <p id="kpi_conformidade_do_sistema_porcentagem">96%</p>
+                <p id="kpi_conformidade_do_sistema_porcentagem">0%</p>
             </div>
 
             <div class="kpi-card alerta">
@@ -90,6 +90,7 @@
                             tempo</span>
                     </div>
 
+                    <!--
                     <div class="grafico-filtro">
                         <label for="filtroConformidade">Período</label>
                         <select id="filtroConformidade">
@@ -98,6 +99,7 @@
                             <option value="mes">Mês</option>
                         </select>
                     </div>
+                -->
                 </div>
 
                 <div class="grafico-container">
@@ -132,6 +134,17 @@
     kpiPontosCriticos();
     kpiAlertas24h();
     kpiPontoMaisCritico();
+
+    setInterval(() => {
+        plotarGrafico();
+        kpiConformidade();
+        kpiPontosCriticos();
+        kpiAlertas24h();
+        kpiPontoMaisCritico();
+    }, 5000);
+
+    let graficoConformidade = null;
+    let graficoNaoConformidade = null;
 
     function logout() {
         window.location.href = "../../index.html"
@@ -241,52 +254,61 @@
 
         // Adiciona o gráfico de conformidade do sistema
         const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
-        new Chart(ctxConformidade, {
-            type: 'line',
-            data: {
-                labels: horas,
-                datasets: [{
-                    label: 'Conformidade (%)',
-                    data: conformidades,
 
-                    borderColor: '#2ecc71',
+        if (graficoConformidade != null) {
+            graficoConformidade.datasets.data = conformidades;
+            graficoConformidade.update();
+        }
+        else {
+            graficoConformidade = new Chart(ctxConformidade, {
+                type: 'line',
+                data: {
+                    labels: horas,
+                    datasets: [{
+                        label: 'Conformidade (%)',
+                        data: conformidades,
 
-                    segment: {
-                        borderColor: ctx => {
-                            const proximoValor = ctx.p1.parsed.y;
-                            return corPorConformidade(proximoValor);
+                        borderColor: '#2ecc71',
+
+                        segment: {
+                            borderColor: ctx => {
+                                const proximoValor = ctx.p1.parsed.y;
+                                return corPorConformidade(proximoValor);
+                            }
+                        },
+
+                        pointBackgroundColor: conformidades.map(valor => corPorConformidade(valor)),
+                        pointBorderColor: conformidades.map(valor => corPorConformidade(valor)),
+
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
                         }
                     },
-
-                    pointBackgroundColor: conformidades.map(valor => corPorConformidade(valor)),
-                    pointBorderColor: conformidades.map(valor => corPorConformidade(valor)),
-
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            callback: value => value + '%'
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                callback: value => value + '%'
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+
+        }
+
 
         const ambientesNaoConformidade = []; // Nome dos ambientes de não conformidade
         const porcentagemNaoConformidade = []; // Porcentagem de não conformidade do sistema
@@ -298,35 +320,45 @@
 
         // Adiciona o gráfico de não conformidade
         const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');
-        new Chart(ctxNaoConformidade, {
-            type: 'bar',
-            data: {
-                labels: ambientesNaoConformidade,
-                datasets: [{
-                    label: 'Não conformidade (%)',
-                    data: porcentagemNaoConformidade,
-                    backgroundColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
-                    borderColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+
+        if (graficoNaoConformidade != null) {
+            graficoNaoConformidade.datasets.data = porcentagemNaoConformidade;
+            graficoConformidade.labels = ambientesNaoConformidade;
+
+            graficoNaoConformidade.update();
+        }
+        else {
+            graficoNaoConformidade = new Chart(ctxNaoConformidade, {
+                type: 'bar',
+                data: {
+                    labels: ambientesNaoConformidade,
+                    datasets: [{
+                        label: 'Não conformidade (%)',
+                        data: porcentagemNaoConformidade,
+                        backgroundColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
+                        borderColor: dadosNaoConformidade.map(valor => corPorNaoConformidade(valor)),
+                        borderWidth: 1
+                    }]
                 },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 100,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                        }
                     }
                 }
-            }
-        });
+            });
+
+        }
 
         let normal = 0;
         let alerta = 0;
@@ -420,10 +452,10 @@
         const dados = await obterAlertas24h();
 
         kpi_total_alertas.innerHTML =
-            dados.total_alertas;
+            dados.qtd_total_alertas;
 
         kpi_po_alertas.innerHTML =
-            `PO com mais alertas: ${dados.ponto_operacional} (${dados.ambiente})`;
+            `PO com mais alertas: ${dados.po_mais_alertas} (${dados.ambiente})`;
     }
 
     async function kpiPontoMaisCritico() {

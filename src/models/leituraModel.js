@@ -14,10 +14,7 @@ function buscarConformidade(id_empresa) {
         SELECT *
         FROM vw_dash_conformidade_do_sistema
         WHERE id_empresa = ${id_empresa}
-        AND hora >= DATE_FORMAT(
-            DATE_SUB(NOW(), INTERVAL 21 HOUR),
-            '%Y-%m-%d %H:00'
-        )
+        AND hora >= CURDATE()
         ORDER BY hora;
     `
 
@@ -70,32 +67,22 @@ function buscarStatusPontosOperacionais(id_empresa) {
 
 async function buscarAlertas24h(id_empresa) {
 
-    const sqlTotal = `
-        SELECT COALESCE(SUM(qtd_alertas), 0) AS total_alertas
-        FROM vw_alertas_24h
-        WHERE id_empresa = ${id_empresa};
-    `;
+    var instrucaoSql = `SELECT COUNT(*) AS qtd_total_alertas FROM vw_alertas WHERE id_empresa = ${id_empresa};`
+    var instrucaoSql2 = `SELECT ponto_operacional, COUNT(*) AS qtd_alertas, ambiente FROM vw_alertas WHERE id_empresa = ${id_empresa}
+                        GROUP BY ponto_operacional, ambiente
+                        ORDER BY qtd_alertas DESC LIMIT 1;
+    `
 
-    const sqlMaior = `
-        SELECT
-            ponto_operacional,
-            ambiente,
-            qtd_alertas
-        FROM vw_alertas_24h
-        WHERE id_empresa = ${id_empresa}
-        ORDER BY qtd_alertas DESC
-        LIMIT 1;
-    `;
+    let resultado1 = await database.executar(instrucaoSql);
+    let resultado2 = await database.executar(instrucaoSql2);
+    let resultadoGeral = {
+        qtd_total_alertas: resultado1[0].qtd_total_alertas,
+        po_mais_alertas: resultado2[0].ponto_operacional,
+        qtd_alertas_po: resultado2[0].qtd_alertas,
+        ambiente: resultado2[0].ambiente
+    }
 
-    const total = await database.executar(sqlTotal);
-    const maior = await database.executar(sqlMaior);
-
-    return {
-        total_alertas: total[0].total_alertas,
-        ponto_operacional: maior.length > 0 ? maior[0].ponto_operacional : '-',
-        ambiente: maior.length > 0 ? maior[0].ambiente : '-',
-        qtd_alertas_po: maior.length > 0 ? maior[0].qtd_alertas : 0
-    };
+    return resultadoGeral;
 }
 
 function buscarPontoMaisCritico(id_empresa) {
@@ -131,7 +118,6 @@ async function gerarAlerta(id_empresa) {
         qtd_alertas_po: resultado2[0].qtd_alertas,
         ambiente: resultado2[0].ambiente
     }
-
 
 
 
