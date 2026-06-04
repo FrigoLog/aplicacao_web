@@ -14,7 +14,7 @@ function buscarConformidade(id_empresa) {
         SELECT *
         FROM vw_dash_conformidade_do_sistema
         WHERE id_empresa = ${id_empresa}
-        AND hora >= CURDATE()
+        
         ORDER BY hora;
     `
 
@@ -91,7 +91,6 @@ function buscarPontoMaisCritico(id_empresa) {
         SELECT *
         FROM vw_ponto_operacional_mais_critico
         WHERE id_empresa = ${id_empresa}
-        ORDER BY diferenca DESC
         LIMIT 1;
     `;
 

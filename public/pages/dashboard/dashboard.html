@@ -54,20 +54,20 @@
                 <p id="kpi_conformidade_do_sistema_porcentagem">0%</p>
             </div>
 
-            <div class="kpi-card alerta">
+            <div class="kpi-card alerta" id="kpi_card_pos_criticos">
                 <div class="kpi-bar"></div>
                 <h3>Pontos Operacionais Críticos</h3>
                 <p id="kpi_pontos_criticos">0</p>
             </div>
 
-            <div class="kpi-card critico">
+            <div class="kpi-card critico" id="kpi_card_alertas">
                 <div class="kpi-bar"></div>
                 <h3>Alertas nas Últimas 24h</h3>
                 <p id="kpi_total_alertas">0</p>
                 <span id="kpi_po_alertas">-</span>
             </div>
 
-            <div class="kpi-card critico">
+            <div class="kpi-card critico" id="kpi_card_po_critico">
                 <div class="kpi-bar"></div>
                 <h3>Ponto Operacional Mais Crítico</h3>
 
@@ -145,6 +145,7 @@
 
     let graficoConformidade = null;
     let graficoNaoConformidade = null;
+    let graficoStatusAmbiente = null;
 
     function logout() {
         window.location.href = "../../index.html"
@@ -380,31 +381,39 @@
         }
 
         const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
-        new Chart(ctxStatusAmbientes, {
-            type: 'doughnut',
-            data: {
-                labels: ['Normal', 'Alerta', 'Crítico'],
-                datasets: [{
-                    label: "Status dos PO's",
-                    data: [normal, alerta, critico],
-                    backgroundColor: [
-                        '#2ecc71',
-                        '#f1c40f',
-                        '#e74c3c'
-                    ],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+
+        if (graficoStatusAmbiente != null) {
+            graficoStatusAmbiente.datasets.data = [normal, alerta, critico];
+            graficoStatusAmbiente.update();
+        }
+        else {
+            graficoStatusAmbiente = new Chart(ctxStatusAmbientes, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Normal', 'Alerta', 'Crítico'],
+                    datasets: [{
+                        label: "Status dos PO's",
+                        data: [normal, alerta, critico],
+                        backgroundColor: [
+                            '#2ecc71',
+                            '#f1c40f',
+                            '#e74c3c'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     async function obterKpiConformidade() {
@@ -442,20 +451,40 @@
     async function kpiPontosCriticos() {
 
         const resultado = await obterPontosCriticos();
+        const quantidade = Number(resultado[0].quantidade);
 
-        kpi_pontos_criticos.innerHTML =
-            resultado[0].quantidade;
+        kpi_pontos_criticos.innerHTML = quantidade;
+
+        if (quantidade < 5) {
+            kpi_card_pos_criticos.className = "kpi-card otimo";
+        }
+        else if (quantidade < 10) {
+            kpi_card_pos_criticos.className = "kpi-card alerta";
+        }
+        else {
+            kpi_card_pos_criticos.className = "kpi-card critico";
+        }
     }
 
     async function kpiAlertas24h() {
 
         const dados = await obterAlertas24h();
+        const qtd_alertas = Number(dados.qtd_total_alertas);
 
-        kpi_total_alertas.innerHTML =
-            dados.qtd_total_alertas;
+        kpi_total_alertas.innerHTML = qtd_alertas;
 
         kpi_po_alertas.innerHTML =
             `PO com mais alertas: ${dados.po_mais_alertas} (${dados.ambiente})`;
+
+        if (qtd_alertas < 10) {
+            kpi_card_alertas.className = "kpi-card otimo";
+        }
+        else if (qtd_alertas < 25) {
+            kpi_card_alertas.className = "kpi-card alerta";
+        }
+        else {
+            kpi_card_alertas.className = "kpi-card critico";
+        }
     }
 
     async function kpiPontoMaisCritico() {
@@ -466,11 +495,24 @@
             return;
         }
 
+        const diferenca = dados[0].diferenca;
+
         kpi_po_mais_critico.innerHTML =
             `${dados[0].ponto_operacional}`;
 
         kpi_diferenca_critica.innerHTML =
-            `${dados[0].diferenca}°C fora da faixa`;
+            `${diferenca}°C fora da faixa`;
+
+
+        if (diferenca < 3) {
+            kpi_card_po_critico.className = "kpi-card otimo";
+        }
+        else if (diferenca < 5) {
+            kpi_card_po_critico.className = "kpi-card alerta";
+        }
+        else {
+            kpi_card_po_critico.className = "kpi-card critico";
+        }
     }
 
 </script>
