@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Administrador</title>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <a href="/index.html" class="logo-link">
+                <div class="logo-row">
+                    <img class="logo-icon" src="../../assets/img/iconlogo.png" alt="Logo">
+                    <div class="logo-text">
+                        <span class="blue">FRIGO</span><span class="red">LOG</span>
+                    </div>
+                </div>
+            </a>
+
+            <div class="logo-badge">
+                CONTROLE TÉRMICO DE PONTA A PONTA
+            </div>
+        </div>
+
+        <div class="menu-item" onclick="alterarConteudo('inicio')">
+            <span class="icon"></span>
+            <span class="text">Início</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('mensagens')">
+            <span class="icon"></span>
+            <span class="text">Contatos</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('cadastrar_empresa')">
+            <span class="icon"></span>
+            <span class="text">Cadastrar Empresa</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('empresas_cadastradas')">
+            <span class="icon"></span>
+            <span class="text">Empresas Cadastradas</span>
+        </div>
+        <div class="menu-item" onclick="alterarConteudo('usuarios_clientes')">
+            <span class="icon"></span>
+            <span class="text">Usuários de clientes</span>
+        </div>
+
+        <div class="menu-item" onclick="alterarConteudo('bob_ia')">
+            <span class="icon"></span>
+            <span class="text">Bob IA</span>
+        </div>
+
+
+        <div class="logout-btn" onclick="logout()">
+            <span class="icon">⎋</span>
+            <span class="text">Sair</span>
+        </div>
+    </div>
+
+    <!-- BOB IA -->
+    <div class="conteudo" id="bob_ia">
+        <div class="caixa_conteudo">
+            <div>
+                <h1 class="conteudo-title"><span>Bob</span> IA</h1>
+            </div>
+
+            <div class="container_bobia">
+                <textarea class="caixa_pergunta" id="pergunta" type="text"
+                    placeholder="Digite a pergunta..."></textarea>
+                <br><br>
+            </div>
+
+            <div class="resposta_ia">
+                <button class="btn-adm" onclick="gerarResposta()">Gerar Resposta</button>
+            </div>
+
+            <div class="resposta_ia">
+                <h3>Resposta da IA:</h3>
+                <div id="resposta"></div>
+            </div>
+        </div>
+    </div>
+    <!-- BOB IA -->
+
+    <div class="conteudo" id="inicio">
+        <h1 class="conteudo-title">Início</h1>
+    </div>
+
+
+    <div class="conteudo" id="mensagens">
+        <div class="caixa_conteudo_contatos">
+
+            <div>
+                <h1 class="conteudo-title"><span>Contatos</span></h1>
+            </div>
+
+            <div>
+                <h4>Empresas que contataram via site institucional</h4>
+            </div>
+
+            <div class="inicio-mensagens cabecalho-tabela">
+                <div>Nome Empresa</div>
+                <div>Email para contato</div>
+                <div>Telefone para contato</div>
+                <div>Data de envio</div>
+            </div>
+
+            <div id="mensagens_mostradas"></div>
+
+
+        </div>
+    </div>
+
+
+    <div class="conteudo" id="cadastrar_empresa">
+        <div class="titulo-cadastroEmpresa">
+            <h2 class="white">CADASTRAR</h2>
+            <h2 class="red">EMPRESA</h2>
+        </div>
+        <div class="form-login">
+
+            <a href="../index.html" style="text-decoration: none;">
+                <div class="logo-row">
+                    <img src="/assets/img/iconlogo.png" alt="Logo FrigoLog">
+
+                    <span class="title-logo">
+                        <span class="white">FRIGO</span><span class="red">LOG</span>
+                    </span>
+                </div>
+            </a>
+
+            <div class="intro-login">
+                <p class="slogan">Controle térmico de ponta a ponta</p>
+            </div>
+
+            <label for="ipt_razao_social" class="label-form">
+                Razão Social:
+            </label>
+
+            <div class="input-box">
+                <i class="bx bx-widget icone-esquerda"></i>
+                <input type="text" id="ipt_razao_social" placeholder="nome oficial">
+            </div>
+
+            <label for="ipt_cnpj" class="label-form">
+                CNPJ:
+            </label>
+
+            <div class="input-box">
+                <i class="bx bx-envelope icone-esquerda"></i>
+                <input type="text" id="ipt_cnpj" placeholder="XX.XXX.XXX/XXXX-XX">
+            </div>
+
+            <label for="ipt_cep" class="label-form">
+                CEP:
+            </label>
+
+            <div class="input-box">
+                <i class="bx bx-envelope icone-esquerda"></i>
+                <input type="text" id="ipt_cep" placeholder="XXXXX-XXX">
+            </div>
+
+            <label for="ipt_numero" class="label-form">
+                Número:
+            </label>
+
+            <div class="input-box">
+                <i class="bx bx-envelope icone-esquerda"></i>
+                <input type="text" id="ipt_numero" placeholder="ex: 100">
+            </div>
+
+            <label for="ipt_codigo" class="label-form">
+                Código da empresa:
+            </label>
+            <div class="codigo">
+                <span id="codigo_gerado" style="font-weight: bold;"></span>
+            </div>
+
+            <div class="input-box codigo_posicao" id="codigo_div">
+            </div>
+
+            <div id="erro" style="color: red;"></div>
+            <div id="sucesso" style="color: green;"></div>
+
+
+            <button onclick="cadastrar()" class="btn-login">
+                Cadastrar Empresa
+            </button>
+
+        </div>
+    </div>
+
+    <div class="conteudo" id="empresas_cadastradas">
+
+        <div class="caixa_conteudo_contatos">
+
+            <div>
+                <h1 class="conteudo-title"><span>Empresas Cadastradas</span></h1>
+            </div>
+            <div>
+                <h4>Empresas cadastradas na FRIGOLOG</h4>
+            </div>
+
+            <div class="inicio-mensagens cabecalho-tabela">
+                <div>Nome Empresa</div>
+                <div>CNPJ</div>
+                <div>Código Empresa</div>
+            </div>
+
+            <div id="empresasCadastradas"></div>
+
+
+        </div>
+    </div>
+
+    <div class="conteudo" id="usuarios_clientes">
+        <h1 class="conteudo-title">Clientes</h1>
+    </div>
+</body>
+<script>
+
+    window.onload = function () {
+        carregarMensagens(),
+            carregarEmpresas()
+    }
+
+    function logout() {
+        window.location.href = "../../index.html"
+    }
+
+    //carrega inicialmente com a tela inicio:
+    alterarConteudo('inicio');
+    function alterarConteudo(id_conteudo) {
+        let conteudos = document.querySelectorAll(".conteudo")
+
+        for (let i = 0; i < conteudos.length; i++) {
+            conteudos[i].style.display = 'none'
+        }
+
+        document.getElementById(id_conteudo).style.display = 'block'
+    }
+
+    // função do BOB IA:
+    async function gerarResposta() {
+        const pergunta = document.getElementById('pergunta').value;
+
+        const response = await fetch('/bobia/perguntar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ pergunta })
+        });
+
+        const data = await response.json();
+
+        resposta.style.display = 'block';
+        document.getElementById('resposta').innerText = data.resultado;
+    }
+
+
+    function carregarMensagens() {
+
+        fetch('/contatoRoutes/mensagensContatos')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarMensagens(resposta);
+
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+    }
+
+    function plotarMensagens(resposta) {
+
+        console.log(resposta)
+
+        var ultimasMensagens = []
+        for (i = 0; i < resposta.length; i++) {
+            ultimasMensagens.push(resposta[i]);
+        }
+        console.log(ultimasMensagens);
+
+
+        for (let i = 0; i < ultimasMensagens.length; i++) {
+            mensagens_mostradas.innerHTML += `
+        <div class="posicao-mensagens">
+        <div class="inicio-mensagens">
+        <div>${ultimasMensagens[i].nome_empresa}</div>
+                <div>${ultimasMensagens[i].email}</div>
+                <div>${ultimasMensagens[i].telefone}</div>
+                <div>${ultimasMensagens[i].data_mensagem}</div>
+                </div>`
+        }
+    }
+
+    // Empresas cadastradas
+
+    function carregarEmpresas() {
+
+        fetch('/empresas/empresasCadastradas')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarEmpresas(resposta);
+
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+    }
+
+    function plotarEmpresas(resposta) {
+
+        console.log(resposta)
+
+        var ultimasMensagens = []
+        for (i = 0; i < resposta.length; i++) {
+            ultimasMensagens.push(resposta[i]);
+        }
+        console.log(ultimasMensagens);
+
+
+        for (let i = 0; i < ultimasMensagens.length; i++) {
+            empresasCadastradas.innerHTML += `
+        <div class="posicao-mensagens">
+        <div class="inicio-mensagens">
+                <div>${ultimasMensagens[i].razao_social}</div>
+                <div>${ultimasMensagens[i].cnpj}</div>
+                <div>${ultimasMensagens[i].codigo_cadastro}</div>
+                </div>`
+        }
+    }
+
+
+    function cadastrar() {
+        var razaoSocial = ipt_razao_social.value;
+        var cnpj = ipt_cnpj.value;
+        var cep = ipt_cep.value;
+        var numero = ipt_numero.value;
+        var erro = document.getElementById("erro");
+        var sucesso = document.getElementById("sucesso");
+
+        erro.innerHTML = "";
+        sucesso.innerHTML = "";
+
+        if (
+            razaoSocial == "" ||
+            cnpj == "" ||
+            cep == "" ||
+            numero == ""
+        ) {
+            erro.innerHTML = "Há campos em branco. Por favor, preencha todos os dados.";
+            return false;
+        }
+
+
+        fetch("/empresas/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                razaoSocialServer: razaoSocial,
+                cnpjServer: cnpj,
+                cepServer: cep,
+                numeroServer: numero
+            }),
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok) {
+                    resposta.json().then(function (dados) {
+                        document.getElementById("codigo_gerado").innerHTML = dados.codigo_empresa;
+                        sucesso.innerHTML = "Cadastro realizado!";
+                    });
+                } else {
+                    resposta.text().then(texto => {
+                        erro.innerHTML = "Erro ao cadastrar: " + texto;
+                    });
+                }
+            })
+            .catch(function (err) {
+                console.log(`#ERRO: ${err}`);
+                erro.innerHTML = "Erro de conexão com o servidor.";
+            });
+
+        return false;
+    }
+
+
+</script>
+
+</html>
