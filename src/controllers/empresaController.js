@@ -132,10 +132,28 @@ function carregarEmpresas(req, res) {
     });
 }
 
+function listarUsuarios(req, res){
+    let idEmpresa = req.params.idEmpresa
+
+    empresaModel.listarUsuarios()
+    .then(function(resultado) {
+
+        res.status(200).json(resultado);
+
+    }).catch(function(erro) {
+
+        console.log(erro);
+        console.log("Erro ao buscar ultimas mensagens de contato");
+
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
 module.exports = {
     listar,
     cadastrar,
     listarAmbientes,
     listarPOs,
-    carregarEmpresas
+    carregarEmpresas,
+    listarUsuarios
 }

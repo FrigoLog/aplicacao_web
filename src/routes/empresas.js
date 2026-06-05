@@ -23,6 +23,10 @@ router.get("/empresasCadastradas", function (req, res) {
     empresaController.carregarEmpresas(req, res);
 });
 
+router.get("/listarUsuarios/:idEmpresa" , function(req, res) {
+    empresaController.listarUsuarios(req,res);
+});
+
  
 module.exports = router;
  

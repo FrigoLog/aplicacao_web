@@ -79,6 +79,21 @@ function carregarEmpresas() {
     return database.executar(instrucao);
 }
 
+function listarUsuarios(idEmpresa) {
+    var instrucao = `
+    SELECT 
+    u.nome,
+    u.email,
+    t.tipo
+    FROM usuario u 
+    JOIN tipo_usuario t
+    ON 
+    u.fk_tipo_usuario = t.id_tipo_usuario
+    WHERE u.fk_empresa = ${idEmpresa};`
+
+    return database.executar(instrucao)
+}
+
 module.exports = {
     listar,
     cadastrar,
@@ -86,5 +101,6 @@ module.exports = {
     listarAmbientes,
     listarPOs,
     verificarCnpj,
-    carregarEmpresas
+    carregarEmpresas,
+    listarUsuarios
 };

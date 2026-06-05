@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friglog | Administrador</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="../js/sessao.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <a href="../index.html" class="logo-link">
+                <div class="logo-row">
+                    <img class="logo-icon" src="./iconlogo.png" alt="Logo">
+                    <div class="logo-text">
+                        <span class="blue">FRIGO</span><span class="red">LOG</span>
+                    </div>
+                </div>
+            </a>
+
+            <div class="logo-badge">
+                CONTROLE TÉRMICO DE PONTA A PONTA
+            </div>
+        </div>
+
+        <div class="menu-item" onclick="window.location.href='./dashboard.html'">
+            <span class="icon">📊</span>
+            <span class="text">Dashboard Geral</span>
+        </div>
+
+        <div class="menu-item menu-ativo">
+            <span class="icon">🧊</span>
+            <span class="text">Ambientes</span>
+        </div>
+
+
+
+        <div class="logout-btn" onclick="logout()">
+            <span class="icon">⎋</span>
+            <span class="text">Sair</span>
+        </div>
+    </div>
+
+    <div class="conteudo-geral">
+        <div class="codigosEmpresa">
+            <div class="codigoFuncionario">
+                codigodasdasda
+            </div>
+            <div class="codigoAdmin">
+                CodigoAdmin
+            </div>
+        </div>
+        <div class="UsuariosEmpresa">
+            <table id="tabelaUsuarios">
+               
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+    const idEmpresa = sessionStorage.ID_EMPRESA
+    function listarUsuarios(){
+        tabelaUsuarios.innerHTML = ` <tr>
+                    <th>
+                        Nome
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Tipo Usuario
+                    </th>
+                </tr>`
+        fetch(`/listarUsuarios/${ID_EMPRESA}`)
+        .then(function(res) {
+            res.json ()
+            .then(function(usuarios) {
+                for(let i = 0; i < usuarios.length; i++) {
+                    let tr = `<tr><td>${usuarios[i].nome}</td><td>${usuarios[i].email}</td><td>${usuarios[i].tipo}</td></tr>`
+                    tabelaUsuarios.innerHTML += tr
+                }
+            })
+        })
+    };
+
+    function logout() {
+        window.location.href = "../../index.html"
+    }
+</script>
+
+</html>
