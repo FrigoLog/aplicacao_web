@@ -158,6 +158,27 @@ body {
   border-bottom: 1px solid #e5e7eb;
 }
 
+.btn-suporte {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #1D9E75;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-suporte:hover {
+  background: #0F6E56;
+}
+
 .menu-ativo {
     display: flex;
     align-items: center;

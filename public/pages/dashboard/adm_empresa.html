@@ -51,6 +51,9 @@
             <div class="codigoFuncionario" id="codigoFuncionario">
                 codigodasdasda
             </div>
+            <a class="btn-suporte" href="https://frigolog-team.atlassian.net/servicedesk/customer/portal/2" target="_blank">
+                Acionar Suporte
+            </a>
         </div>
         <div class="UsuariosEmpresa">
             <table id="tabelaUsuarios">
@@ -91,7 +94,7 @@
         .then(function(res) {
             res.json ()
             .then(function(codigo) {
-                codigoFuncionario.innerHTML = codigo[0].codigo_cadastro
+                codigoFuncionario.innerHTML = "Código de Cadastro:" + codigo[0].codigo_cadastro
             })
         })
     }
