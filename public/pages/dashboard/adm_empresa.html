@@ -87,7 +87,7 @@
     };
     buscarCodigoEmpresa();
     function buscarCodigoEmpresa()  {
-        fetch(`/buscarCodigoEmpresa/${idEmpresa}`)
+        fetch(`/empresas/buscarCodigoEmpresa/${idEmpresa}`)
         .then(function(res) {
             res.json ()
             .then(function(codigo) {
