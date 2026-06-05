@@ -104,6 +104,23 @@ function buscarCodigoEmpresa(idEmpresa) {
     return database.executar(instrucao)
 }
 
+function listarTodosUsuarios() {
+    var instrucao = `
+    SELECT 
+    u.nome,
+    u.email,
+    t.tipo,
+    e.razao_social
+    FROM usuario u 
+    JOIN tipo_usuario t
+    ON u.fk_tipo_usuario = t.id_tipo_usuario
+    JOIN empresa e
+    ON u.fk_empresa = e.id_empresa
+    ;`
+
+    return database.executar(instrucao)
+}
+
 module.exports = {
     listar,
     cadastrar,
@@ -113,5 +130,6 @@ module.exports = {
     verificarCnpj,
     carregarEmpresas,
     listarUsuarios,
-    buscarCodigoEmpresa
+    buscarCodigoEmpresa,
+    listarTodosUsuarios
 };

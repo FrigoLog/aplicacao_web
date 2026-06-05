@@ -31,6 +31,10 @@ router.get("/buscarCodigoEmpresa/:idEmpresa" , function(req, res) {
     empresaController.buscarCodigoEmpresa(req,res);
 });
 
+router.get("/listarTodosUsuarios" , function(req, res) {
+    empresaController.listarTodosUsuarios(req,res);
+});
+
  
 module.exports = router;
  
