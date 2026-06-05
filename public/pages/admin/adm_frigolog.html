@@ -216,15 +216,18 @@
 
     <div class="conteudo" id="usuarios_clientes">
         <h1 class="conteudo-title">Clientes</h1>
+        <input type="text" oninput="FiltrarUsuariosPorEmpresa()" id="FiltrarUsuarios">
+        <div class="UsuariosClientes">
+            <table id="UsuariosClientes">
 
-        <table id="UsuariosClientes">
+            </table>
+        </div>
 
-        </table>
     </div>
 </body>
 <script>
 
-     function listarUsuarios(){
+    function listarUsuarios(nomeEmpresa) {
         UsuariosClientes.innerHTML = ` <tr>
                     <th>
                         Nome
@@ -240,23 +243,30 @@
                     </th>
                 </tr>`
         fetch(`/empresas/listarTodosUsuarios`)
-        .then(function(res) {
-            res.json ()
-            .then(function(usuarios) {
-                for(let i = 0; i < usuarios.length; i++) {
-                    let tr = `<tr><td>${usuarios[i].nome}</td><td>${usuarios[i].email}</td><td>${usuarios[i].tipo}</td><td>${usuarios[i].razao_social}</td></tr>`
-                    UsuariosClientes.innerHTML += tr
-                }
+            .then(function (res) {
+                res.json()
+                    .then(function (usuarios) {
+                        for (let i = 0; i < usuarios.length; i++) {
+                            if(usuarios[i].razao_social.toLowerCase().includes(nomeEmpresa.toLowerCase()) || nomeEmpresa == "") {
+                            let tr = `<tr><td>${usuarios[i].nome}</td><td>${usuarios[i].email}</td><td>${usuarios[i].tipo}</td><td>${usuarios[i].razao_social}</td></tr>`
+                            UsuariosClientes.innerHTML += tr
+                            }
+                        }
+                    })
             })
-        })
     };
 
     window.onload = function () {
         carregarMensagens(),
             carregarEmpresas(),
-            listarUsuarios()
+            listarUsuarios("")
+            
     }
 
+    function FiltrarUsuariosPorEmpresa() {
+        let Filtro = FiltrarUsuarios.value;
+        listarUsuarios(Filtro)
+    }
     function logout() {
         window.location.href = "../../index.html"
     }
