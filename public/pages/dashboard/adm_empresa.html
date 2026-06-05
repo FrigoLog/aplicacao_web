@@ -48,11 +48,8 @@
 
     <div class="conteudo-geral">
         <div class="codigosEmpresa">
-            <div class="codigoFuncionario">
+            <div class="codigoFuncionario" id="codigoFuncionario">
                 codigodasdasda
-            </div>
-            <div class="codigoAdmin">
-                CodigoAdmin
             </div>
         </div>
         <div class="UsuariosEmpresa">
@@ -88,6 +85,16 @@
             })
         })
     };
+    buscarCodigoEmpresa();
+    function buscarCodigoEmpresa()  {
+        fetch(`/buscarCodigoEmpresa/${idEmpresa}`)
+        .then(function(res) {
+            res.json ()
+            .then(function(codigo) {
+                codigoFuncionario.innerHTML = codigo[0].codigo_cadastro
+            })
+        })
+    }
 
     function logout() {
         window.location.href = "../../index.html"

@@ -94,6 +94,16 @@ function listarUsuarios(idEmpresa) {
     return database.executar(instrucao)
 }
 
+function buscarCodigoEmpresa(idEmpresa) {
+    var instrucao = `
+    SELECT 
+    codigo_cadastro
+    FROM empresa
+    WHERE id_empresa = ${idEmpresa};`
+
+    return database.executar(instrucao)
+}
+
 module.exports = {
     listar,
     cadastrar,
@@ -102,5 +112,6 @@ module.exports = {
     listarPOs,
     verificarCnpj,
     carregarEmpresas,
-    listarUsuarios
+    listarUsuarios,
+    buscarCodigoEmpresa
 };

@@ -143,7 +143,24 @@ function listarUsuarios(req, res){
     }).catch(function(erro) {
 
         console.log(erro);
-        console.log("Erro ao buscar ultimas mensagens de contato");
+        console.log("Erro ao listar Usuarios");
+
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function buscarCodigoEmpresa(req, res){
+    let idEmpresa = req.params.idEmpresa
+
+    empresaModel.buscarCodigoEmpresa(idEmpresa)
+    .then(function(resultado) {
+
+        res.status(200).json(resultado);
+
+    }).catch(function(erro) {
+
+        console.log(erro);
+        console.log("Erro ao buscar o código da empresa");
 
         res.status(500).json(erro.sqlMessage);
     });
@@ -155,5 +172,6 @@ module.exports = {
     listarAmbientes,
     listarPOs,
     carregarEmpresas,
-    listarUsuarios
+    listarUsuarios,
+    buscarCodigoEmpresa
 }

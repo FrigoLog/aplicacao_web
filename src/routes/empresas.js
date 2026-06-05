@@ -27,6 +27,10 @@ router.get("/listarUsuarios/:idEmpresa" , function(req, res) {
     empresaController.listarUsuarios(req,res);
 });
 
+router.get("/buscarCodigoEmpresa/:idEmpresa" , function(req, res) {
+    empresaController.listarUsuarios(req,res);
+});
+
  
 module.exports = router;
  
