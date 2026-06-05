@@ -135,7 +135,7 @@ function carregarEmpresas(req, res) {
 function listarUsuarios(req, res){
     let idEmpresa = req.params.idEmpresa
 
-    empresaModel.listarUsuarios()
+    empresaModel.listarUsuarios(idEmpresa)
     .then(function(resultado) {
 
         res.status(200).json(resultado);

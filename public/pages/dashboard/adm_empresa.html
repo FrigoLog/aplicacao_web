@@ -64,6 +64,7 @@
 </body>
 <script>
     const idEmpresa = sessionStorage.ID_EMPRESA
+    listarUsuarios();
     function listarUsuarios(){
         tabelaUsuarios.innerHTML = ` <tr>
                     <th>
@@ -76,7 +77,7 @@
                         Tipo Usuario
                     </th>
                 </tr>`
-        fetch(`/listarUsuarios/${ID_EMPRESA}`)
+        fetch(`/empresas/listarUsuarios/${idEmpresa}`)
         .then(function(res) {
             res.json ()
             .then(function(usuarios) {
