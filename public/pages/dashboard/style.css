@@ -10,6 +10,8 @@ body {
     font-family: 'Space Grotesk', Arial, sans-serif;
 }
 
+
+
 .sidebar {
     position: fixed;
     top: 0;
@@ -105,6 +107,76 @@ body {
     transition: 0.3s;
 
     margin-bottom: 10px;
+}
+
+.nome {
+  display: none;
+}
+
+.codigosEmpresa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.codigoAdmin, .codigoFuncionario {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px 20px ;
+
+}
+
+.UsuariosEmpresa {
+  padding: 1.5rem 0;
+  font-family: sans-serif;
+}
+
+.UsuariosEmpresa table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.UsuariosEmpresa th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.UsuariosEmpresa td {
+  padding: 12px 16px;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.btn-suporte {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #1D9E75;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-suporte:hover {
+  background: #0F6E56;
 }
 
 .menu-ativo {

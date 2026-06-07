@@ -10,6 +10,38 @@ body {
     font-family: 'Space Grotesk', Arial, sans-serif;
 }
 
+.UsuariosClientes {
+  padding: 1.5rem 0;
+  font-family: sans-serif;
+}
+
+.UsuariosClientes table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.UsuariosClientes th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.UsuariosClientes td {
+  padding: 12px 16px;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+}
 
 .sidebar {
     position: fixed;
@@ -101,6 +133,7 @@ body {
     transition: 0.3s;
 
     margin-bottom: 10px;
+     text-decoration: none;
 }
 
 .menu-item .icon {
@@ -116,6 +149,10 @@ body {
     background-color: #0b1533;
     color: white;
     transform: translateX(5px);
+}
+
+.cor-link-manual {
+    color: #111827;
 }
 
 .logout-btn {

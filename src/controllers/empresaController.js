@@ -132,10 +132,63 @@ function carregarEmpresas(req, res) {
     });
 }
 
+function listarUsuarios(req, res){
+    let idEmpresa = req.params.idEmpresa
+
+    empresaModel.listarUsuarios(idEmpresa)
+    .then(function(resultado) {
+
+        res.status(200).json(resultado);
+
+    }).catch(function(erro) {
+
+        console.log(erro);
+        console.log("Erro ao listar Usuarios");
+
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function buscarCodigoEmpresa(req, res){
+    let idEmpresa = req.params.idEmpresa
+
+    empresaModel.buscarCodigoEmpresa(idEmpresa)
+    .then(function(resultado) {
+
+        res.status(200).json(resultado);
+
+    }).catch(function(erro) {
+
+        console.log(erro);
+        console.log("Erro ao buscar o código da empresa");
+
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function listarTodosUsuarios(req, res){
+
+    empresaModel.listarTodosUsuarios()
+    .then(function(resultado) {
+
+        res.status(200).json(resultado);
+
+    }).catch(function(erro) {
+
+        console.log(erro);
+        console.log("Erro ao buscar os usuarios de Empresa");
+
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
 module.exports = {
     listar,
     cadastrar,
     listarAmbientes,
     listarPOs,
-    carregarEmpresas
+    carregarEmpresas,
+    listarUsuarios,
+    buscarCodigoEmpresa,
+    listarTodosUsuarios
 }

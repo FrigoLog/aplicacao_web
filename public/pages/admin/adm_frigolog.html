@@ -51,6 +51,11 @@
             <span class="text">Bob IA</span>
         </div>
 
+        <a href="../../assets/docs/ManualDeInstalacao.pdf" download="ManualDeInstalacao.pdf" class="menu-item">
+            <span class="icon"></span>
+            <span class="text cor-link-manual">Manual de Instalação</span>
+        </a>
+
 
         <div class="logout-btn" onclick="logout()">
             <span class="icon">⎋</span>
@@ -63,6 +68,10 @@
         <div class="caixa_conteudo">
             <div>
                 <h1 class="conteudo-title"><span>Bob</span> IA</h1>
+            </div>
+
+            <div class="resposta_ia">
+                <h4>Tire suas dúvidas com a nossa Inteligência Artificial!</h4>
             </div>
 
             <div class="container_bobia">
@@ -216,15 +225,57 @@
 
     <div class="conteudo" id="usuarios_clientes">
         <h1 class="conteudo-title">Clientes</h1>
+        <input type="text" oninput="FiltrarUsuariosPorEmpresa()" id="FiltrarUsuarios">
+        <div class="UsuariosClientes">
+            <table id="UsuariosClientes">
+
+            </table>
+        </div>
+
     </div>
 </body>
 <script>
 
+    function listarUsuarios(nomeEmpresa) {
+        UsuariosClientes.innerHTML = ` <tr>
+                    <th>
+                        Nome
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Tipo Usuario
+                    </th>
+                    <th>
+                        Nome Empresa
+                    </th>
+                </tr>`
+        fetch(`/empresas/listarTodosUsuarios`)
+            .then(function (res) {
+                res.json()
+                    .then(function (usuarios) {
+                        for (let i = 0; i < usuarios.length; i++) {
+                            if (usuarios[i].razao_social.toLowerCase().includes(nomeEmpresa.toLowerCase()) || nomeEmpresa == "") {
+                                let tr = `<tr><td>${usuarios[i].nome}</td><td>${usuarios[i].email}</td><td>${usuarios[i].tipo}</td><td>${usuarios[i].razao_social}</td></tr>`
+                                UsuariosClientes.innerHTML += tr
+                            }
+                        }
+                    })
+            })
+    };
+
     window.onload = function () {
         carregarMensagens(),
-            carregarEmpresas()
+            carregarEmpresas(),
+            listarUsuarios("")
+
     }
 
+    function FiltrarUsuariosPorEmpresa() {
+        let Filtro = FiltrarUsuarios.value;
+        listarUsuarios(Filtro)
+    }
     function logout() {
         window.location.href = "../../index.html"
     }
@@ -389,6 +440,12 @@
                     resposta.json().then(function (dados) {
                         document.getElementById("codigo_gerado").innerHTML = dados.codigo_empresa;
                         sucesso.innerHTML = "Cadastro realizado!";
+
+                        ipt_razao_social.value = ""
+                        ipt_cnpj.value = ""
+                        ipt_cep.value = ""
+                        ipt_numero.value = ""
+                        document.getElementById("codigo_gerado").innerHTML = ""
                     });
                 } else {
                     resposta.text().then(texto => {
@@ -404,6 +461,9 @@
         return false;
     }
 
+    function limparCadastro() {
+
+    }
 
 </script>
 

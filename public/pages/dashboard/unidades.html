@@ -39,6 +39,10 @@
             <span class="text">Ambientes</span>
         </div>
 
+         <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
+            <span class="icon">👨‍💻</span>
+            <span class="text">Administrador</span>
+        </div>
 
         <div class="logout-btn" onclick="logout()">
             <span class="icon">⎋</span>
@@ -100,6 +104,11 @@
     </div>
 </body>
 <script>
+
+    if(sessionStorage.TIPO_USUARIO == "admin_empresa") {
+        menuitem_admin.classList.remove("nome")
+     };
+
     let ambientes = [];
     let pos = [];
     let ambientePO = 0;
