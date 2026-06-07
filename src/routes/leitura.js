@@ -35,6 +35,14 @@ router.get("/ponto_mais_critico/:idEmpresa", function (req, res) {
     leituraController.buscarPontoMaisCritico(req, res);
 });
 
+router.get("/temperaturas_po/:idPo", function (req, res) {
+    leituraController.temperaturaDoPo(req, res);
+});
+
+router.get("/alertas_po/:idPo", function (req, res) {
+    leituraController.alertasDoPo(req, res);
+});
+
 /*
 router.get("/alertas/:idEmpresa", function (req, res) {
     leituraController.gerarAlerta(req, res);

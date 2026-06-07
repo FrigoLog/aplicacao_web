@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="../js/sessao.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -66,15 +67,48 @@
 
             </div>
         </div>
+
+        <div class="subconteudo" id="dashboardPO">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 100px;">
+                <h1 id="nome_po" style="font-size: 40px; font-family: Arial, Helvetica, sans-serif; color: #fff;">PO</h1>
+
+                <div style="display: flex; align-items: center; justify-content: space-around; width: 60%;">
+                    <div class="kpis" style="width: 80%;">
+                        <!-- Temperatura atual -->
+                        <div class="kpi-card otimo" id="kpi_card_temperatura">
+                            <div class="kpi-bar"></div>
+                            <h3>Temperatura atual</h3>
+                            <p id="kpi_temperatura_atual">0</p>
+                        </div>
+
+                        <!-- Alertas gerados-->
+                        <div class="kpi-card critico" id="kpi_card_alertas">
+                            <div class="kpi-bar"></div>
+                            <h3>Alertas nas Últimas 24h</h3>
+                            <p id="kpi_total_alertas">0</p>
+                        </div>
+                    </div>
+
+                    <button onclick="voltarPO()">Voltar</button>
+                </div>
+            </div>
+
+            <div style="height: 60vh;">
+                <canvas id="grafico_temperatura" style="background-color: aliceblue;"></canvas>
+            </div>
+        </div>
     </div>
 </body>
 <script>
     let ambientes = [];
     let pos = [];
+    let ambientePO = 0;
+    let graficoTemperatura = null;
 
     listarAmbientes()
     async function listarAmbientes() {
         conteudoPO.style.display = "none";
+        dashboardPO.style.display = "none";
         id_lista_ambientes.innerHTML = ``;
 
 
@@ -119,6 +153,9 @@
 
     async function abrirPO(id_ambiente) {
         conteudoAmbientes.style.display = "none";
+        dashboardPO.style.display = "none";
+
+        ambientePO = id_ambiente;
 
         id_lista_po.innerHTML = ``;
 
@@ -136,7 +173,7 @@
 
         for (let i = 0; i < pos.length; i++) {
             let po_card = `
-            <div class="kpi-card" style="cursor: pointer;" onclick="detalharPO(${listaPO[i].id_po})">
+            <div class="kpi-card" style="cursor: pointer;" onclick="detalharPO(${listaPO[i].id_ponto_operacional})">
                 <span>${listaPO[i].nome}</span>
             </div>
             `;
@@ -162,6 +199,148 @@
 
         renderizarPO(pos_filtrados);
 
+    }
+
+    async function detalharPO(id_po) {
+        conteudoPO.style.display = "none";
+        dashboardPO.style.display = "block";
+
+        const resTemp = await fetch("/leituras/temperaturas_po/" + id_po);
+        const temperaturas = await resTemp.json();
+
+        const resAlertas = await fetch("/leituras/alertas_po/" + id_po);
+        const alertas = await resAlertas.json();
+
+        renderizarDashPO(temperaturas, alertas);
+    }
+
+    function corPorTemperatura(valor, temp_min, temp_max) {
+        if ((valor - temp_max) >= 5 || (temp_min - valor) >= 5) {
+            // Critico
+            return "#e74c3c";
+        }
+        else if (((valor - temp_max) >= 3 || (temp_min - valor) >= 3)) {
+            // Alerta
+            return "#f1c40f";
+        }
+        else {
+            // Normal
+            return "#2ecc71";
+        }
+    }
+
+    function renderizarDashPO(temp, alertas) {
+        nome_po.innerHTML = `${temp[0].ponto_operacional}`;
+
+        const temperaturas = [];
+        const data_hora = [];
+        const temp_min = temp[0].temp_min;
+        const temp_max = temp[0].temp_max;
+
+        for (let i = 0; i < temp.length; i++) {
+            temperaturas.push(Number(temp[i].temperatura));
+            data_hora.push(temp[i].data_hora);
+        }
+
+        const ultima_temperatura = temperaturas[temperaturas.length - 1];
+        kpi_temperatura_atual.innerHTML = ultima_temperatura;
+
+        if ((ultima_temperatura - temp_max) >= 5 || (temp_min - ultima_temperatura) >= 5) {
+            // Critico
+            kpi_card_temperatura.className = "kpi-card critico";
+        }
+        else if (((ultima_temperatura - temp_max) >= 3 || (temp_min - ultima_temperatura) >= 3)) {
+            // Alerta
+            kpi_card_temperatura.className = "kpi-card alerta";
+        }
+        else {
+            // Normal
+            kpi_card_temperatura.className = "kpi-card otimo";
+        }
+
+        const qtd_alertas = alertas[0].total_alertas;
+        kpi_total_alertas.innerHTML = qtd_alertas;
+
+        if (qtd_alertas > 10) {
+            kpi_card_alertas.className = "kpi-card critico";
+        }
+        else if (qtd_alertas > 5) {
+            kpi_card_alertas.className = "kpi-card alerta";
+        }
+        else {
+            kpi_card_alertas.className = "kpi-card otimo";
+        }
+
+        if (graficoTemperatura != null) {
+            graficoTemperatura.datasets.data = temperaturas;
+            graficoTemperatura.update();
+        }
+        else {
+            const ctxTemperatura = document.getElementById("grafico_temperatura");
+            graficoTemperatura = new Chart(ctxTemperatura, {
+                type: 'line',
+                data: {
+                    labels: data_hora,
+                    datasets: [{
+                        label: "Temperaturas",
+                        data: temperaturas,
+                        borderColor: '#2ecc71',
+
+                        segment: {
+                            borderColor: ctx => {
+                                const proximoValor = ctx.p1.parsed.y;
+                                return corPorTemperatura(proximoValor, temp_min, temp_max);
+                            }
+                        },
+
+                        pointBackgroundColor: temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max)),
+                        pointBorderColor: temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max)),
+
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: -20,
+                            max: 20,
+                            ticks: {
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 20
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function voltarPO() {
+        if (graficoTemperatura != null) {
+            graficoTemperatura.destroy();
+            graficoTemperatura = null;
+        }
+
+        abrirPO(ambientePO);
     }
 
 

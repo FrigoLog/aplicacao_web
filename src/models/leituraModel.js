@@ -14,7 +14,7 @@ function buscarConformidade(id_empresa) {
         SELECT *
         FROM vw_dash_conformidade_do_sistema
         WHERE id_empresa = ${id_empresa}
-        
+        AND data_hora >= CURDATE()
         ORDER BY hora;
     `
 
@@ -67,20 +67,28 @@ function buscarStatusPontosOperacionais(id_empresa) {
 
 async function buscarAlertas24h(id_empresa) {
 
-    var instrucaoSql = `SELECT COUNT(*) AS qtd_total_alertas FROM vw_alertas WHERE id_empresa = ${id_empresa};`
-    var instrucaoSql2 = `SELECT ponto_operacional, COUNT(*) AS qtd_alertas, ambiente FROM vw_alertas WHERE id_empresa = ${id_empresa}
+    var instrucaoSql = `SELECT COUNT(*) AS qtd_total_alertas FROM vw_alertas WHERE id_empresa = ${id_empresa} AND data_hora >= CURDATE();`;
+    var instrucaoSql2 = `SELECT ponto_operacional, COUNT(*) AS qtd_alertas, ambiente FROM vw_alertas WHERE id_empresa = ${id_empresa} AND data_hora >= CURDATE()
                         GROUP BY ponto_operacional, ambiente
                         ORDER BY qtd_alertas DESC LIMIT 1;
     `
 
     let resultado1 = await database.executar(instrucaoSql);
-    let resultado2 = await database.executar(instrucaoSql2);
     let resultadoGeral = {
         qtd_total_alertas: resultado1[0].qtd_total_alertas,
-        po_mais_alertas: resultado2[0].ponto_operacional,
-        qtd_alertas_po: resultado2[0].qtd_alertas,
-        ambiente: resultado2[0].ambiente
+        po_mais_alertas: null,
+        qtd_alertas_po: null,
+        ambiente: null
     }
+
+    if (resultado1[0].total_alertas > 0) {
+        let resultado2 = await database.executar(instrucaoSql2);
+
+        resultadoGeral.po_mais_alertas = resultado2[0].ponto_operacional;
+        resultadoGeral.qtd_alertas_po = resultado2[0].qtd_alertas;
+        resultadoGeral.ambiente = resultado2[0].ambiente;
+    }
+
 
     return resultadoGeral;
 }
@@ -95,6 +103,42 @@ function buscarPontoMaisCritico(id_empresa) {
     `;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function temperaturaDoPo(id_po) {
+    const instrucaoSql = `
+        SELECT
+            l.id_leitura,
+            l.temperatura,
+            DATE_FORMAT(l.data_hora, '%H:%i') AS data_hora,
+            s.identificador AS sensor,
+            po.nome AS ponto_operacional,
+            cpo.temp_min,
+            cpo.temp_max
+        FROM leitura l
+        JOIN sensor s
+            ON l.fk_sensor = s.id_sensor
+        JOIN ponto_operacional po
+            ON s.fk_po = po.id_ponto_operacional
+        JOIN configuracao_ponto_operacional cpo
+            ON po.fk_configuracao_po = cpo.id_configuracao
+        WHERE po.id_ponto_operacional = ${id_po}
+        ORDER BY l.data_hora
+        LIMIT 15;
+    `;
+
+    return database.executar(instrucaoSql);
+}
+
+function alertasDoPo(id_po) {
+    const instrucaoSql = `
+        SELECT COUNT(*) AS total_alertas
+            FROM vw_alertas
+            WHERE id_ponto_operacional = ${id_po}
+            AND data_hora >= CURDATE();
+    `;
+
     return database.executar(instrucaoSql);
 }
 
@@ -133,5 +177,7 @@ module.exports = {
     buscarPontosCriticos,
     buscarStatusPontosOperacionais,
     buscarAlertas24h,
-    buscarPontoMaisCritico
+    buscarPontoMaisCritico,
+    temperaturaDoPo,
+    alertasDoPo
 }

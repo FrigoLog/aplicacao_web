@@ -473,8 +473,14 @@
 
         kpi_total_alertas.innerHTML = qtd_alertas;
 
-        kpi_po_alertas.innerHTML =
-            `PO com mais alertas: ${dados.po_mais_alertas} (${dados.ambiente})`;
+        if (dados.po_mais_alertas != null && dados.ambiente != null) {
+            kpi_po_alertas.innerHTML =
+                `PO com mais alertas: ${dados.po_mais_alertas} (${dados.ambiente})`;
+        }
+        else {
+            kpi_po_alertas.innerHTML =
+                `Nenhum alerta foi gerado`;
+        }
 
         if (qtd_alertas < 10) {
             kpi_card_alertas.className = "kpi-card otimo";
