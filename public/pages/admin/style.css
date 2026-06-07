@@ -133,6 +133,7 @@ body {
     transition: 0.3s;
 
     margin-bottom: 10px;
+     text-decoration: none;
 }
 
 .menu-item .icon {
@@ -148,6 +149,10 @@ body {
     background-color: #0b1533;
     color: white;
     transform: translateX(5px);
+}
+
+.cor-link-manual {
+    color: #111827;
 }
 
 .logout-btn {

@@ -231,7 +231,7 @@
                     <button onclick="enviar()" class="btn-login">Enviar</button><br><br>
                     <div id="sucesso"></div>
                     <div id="erro"></div>
-                    
+
 
                 </div>
 
@@ -270,10 +270,11 @@
 
                 <a href="#">Home</a>
                 <a href="#sobre">Sobre nós</a>
-                <a href="#simulador">Simulador</a>
+                <a href="#simulador">Simulador</a><br>
 
                 <h3>Manual de Instalação</h3>
-                <a href="/assets/docs/ManualDeInstalacao.pdf" download="ManualDeInstalacao.pdf">Download Manual de Instalação</a>
+                <a href="/assets/docs/ManualDeInstalacao.pdf" download="ManualDeInstalacao.pdf">Download Manual de
+                    Instalação</a>
             </div>
 
             <div class="footer-col">
@@ -285,14 +286,15 @@
 
                 <h3>Central de Atendimento</h3>
 
-                <a href="https://frigolog-team.atlassian.net/servicedesk/customer/portal/2">A Frigolog está a disposição para ajudá-lo!</a>
+                <a href="https://frigolog-team.atlassian.net/servicedesk/customer/portal/2">A Frigolog está a disposição
+                    para ajudá-lo!</a>
             </div>
         </footer>
     </div>
 </body>
 <script>
 
-    function enviar(){
+    function enviar() {
 
         var nomeEmpresaInserido = ipt_nome_empresa.value;
         var emailInserido = ipt_email.value;
@@ -302,44 +304,48 @@
         sucesso.innerHTML = ""
 
         if (
-                nomeEmpresaInserido == "" ||
-                emailInserido == "" ||
-                telefoneInserido == ""
-            ) {
-                erro.innerHTML = "Há campos em branco. Por favor, preencha todos os dados.";
-                return false;
-            }
-
-            fetch("/contatoRoutes/contato", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    nomeEmpresaServer: nomeEmpresaInserido,
-                    emailServer: emailInserido,
-                    telefoneServer: telefoneInserido
-                }),
-            })
-                .then(function (resposta) {
-                    console.log("resposta: ", resposta);
- 
-                    if (resposta.ok) {
-                        sucesso.innerHTML =
-                            "Informações de Contato enviado! Aguarde o retorno"; 
-                    } else {
-                        resposta.text().then(texto => {
-                            erro.innerHTML = "Erro ao enviar Informações de Contato: " + texto;
-                        });
-                    }
-                })
-                .catch(function (err) {
-                    console.log(`#ERRO: ${err}`);
-                    erro.innerHTML = "Erro de conexão com o servidor.";
-                });
- 
+            nomeEmpresaInserido == "" ||
+            emailInserido == "" ||
+            telefoneInserido == ""
+        ) {
+            erro.innerHTML = "Há campos em branco. Por favor, preencha todos os dados.";
             return false;
         }
+
+        fetch("/contatoRoutes/contato", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nomeEmpresaServer: nomeEmpresaInserido,
+                emailServer: emailInserido,
+                telefoneServer: telefoneInserido
+            }),
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok) {
+                    sucesso.innerHTML =
+                        "Informações de Contato enviadas com sucesso! Aguarde o retorno";
+
+                    ipt_nome_empresa.value = ""
+                    ipt_email.value = ""
+                    ipt_telefone.value = ""
+                } else {
+                    resposta.text().then(texto => {
+                        erro.innerHTML = "Erro ao enviar Informações de Contato: " + texto;
+                    });
+                }
+            })
+            .catch(function (err) {
+                console.log(`#ERRO: ${err}`);
+                erro.innerHTML = "Erro de conexão com o servidor.";
+            });
+
+        return false;
+    }
 
 
     let periodoAtual = 1; // ou 12 (mensal ou anual)
