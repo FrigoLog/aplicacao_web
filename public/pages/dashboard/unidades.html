@@ -127,6 +127,19 @@
                 </div>
             </div>
 
+            <div style="margin-top: 12px; padding: 12px 16px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #444; line-height: 1.6;">
+                <strong>Interpretação do gráfico:</strong><br>
+
+                🟢 <strong>Verde:</strong> temperatura dentro da faixa ideal definida para este Ponto Operacional (entre
+                a temperatura mínima e máxima de referência).<br>
+
+                🟡 <strong>Amarelo:</strong> temperatura fora da faixa ideal, com diferença de até <strong>3°C</strong>
+                em relação ao limite mais próximo.<br>
+
+                🔴 <strong>Vermelho:</strong> temperatura com diferença superior a <strong>3°C</strong> da faixa ideal,
+                indicando situação crítica que exige atenção imediata.
+            </div>
+
         </div>
     </div>
 </body>
@@ -299,6 +312,10 @@
 
         const temperaturas = [];
         const data_hora = [];
+
+        const linhaTempMax = [];
+        const linhaTempMin = [];
+
         const temp_min = temp[0].temp_min;
         const temp_max = temp[0].temp_max;
 
@@ -308,6 +325,11 @@
         for (let i = 0; i < temp.length; i++) {
             temperaturas.push(Number(temp[i].temperatura));
             data_hora.push(temp[i].data_hora);
+        }
+
+        for (let i = 0; i < data_hora.length; i++) {
+            linhaTempMax.push(temp_max);
+            linhaTempMin.push(temp_min);
         }
 
         const minPeriodo = Math.min(...temperaturas);
@@ -344,11 +366,11 @@
         const ultima_temperatura = temperaturas[temperaturas.length - 1];
         kpi_temperatura_atual.innerHTML = ultima_temperatura + " °C";
 
-        if ((ultima_temperatura - temp_max) >= 5 || (temp_min - ultima_temperatura) >= 5) {
+        if ((ultima_temperatura - temp_max) >= 3 || (temp_min - ultima_temperatura) >= 3) {
             // Critico
             kpi_card_temperatura.className = "kpi-card critico";
         }
-        else if (((ultima_temperatura - temp_max) >= 3 || (temp_min - ultima_temperatura) >= 3)) {
+        else if (((ultima_temperatura - temp_max) >= 1 || (temp_min - ultima_temperatura) >= 1)) {
             // Alerta
             kpi_card_temperatura.className = "kpi-card alerta";
         }
@@ -395,12 +417,35 @@
                         pointBackgroundColor: temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max)),
                         pointBorderColor: temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max)),
 
-                        pointRadius: 6,
+                        pointRadius: 3,
                         pointHoverRadius: 8,
                         borderWidth: 3,
                         tension: 0.4,
                         fill: false
-                    }]
+                    },
+                    {
+                        label: "Linha Temperatura Ideal Máxima",
+                        data: linhaTempMax,
+                        borderColor: "#00ff00",
+                        borderWidth: 2,
+                        borderDash: [8, 4],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        tension: 0,
+                        fill: false
+                    },
+                    {
+                        label: "Linha Temperatura Ideal Mínima",
+                        data: linhaTempMin,
+                        borderColor: "#00ff00",
+                        borderWidth: 2,
+                        borderDash: [8, 4],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        tension: 0,
+                        fill: false
+                    },
+                    ]
                 },
                 options: {
                     responsive: true,

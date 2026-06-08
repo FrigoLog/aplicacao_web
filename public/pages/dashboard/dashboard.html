@@ -591,13 +591,12 @@
             `${diferenca}°C fora da faixa`;
 
 
-        if (diferenca < 3) {
+        if (diferenca <= 0) {
             kpi_card_po_critico.className = "kpi-card otimo";
         }
-        else if (diferenca < 5) {
+        else if (diferenca <= 3) {
             kpi_card_po_critico.className = "kpi-card alerta";
-        }
-        else {
+        } else {
             kpi_card_po_critico.className = "kpi-card critico";
         }
     }
