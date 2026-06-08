@@ -14,7 +14,7 @@ function buscarConformidade(id_empresa) {
         SELECT *
         FROM vw_dash_conformidade_do_sistema
         WHERE id_empresa = ${id_empresa}
-        AND data_hora >= CURDATE()
+        AND hora >= CURDATE()
         ORDER BY hora;
     `
 
@@ -84,7 +84,7 @@ async function buscarAlertas24h(id_empresa) {
     if (resultado1[0].total_alertas > 0) {
         let resultado2 = await database.executar(instrucaoSql2);
 
-        resultadoGeral.po_mais_alertas = resultado2[0].ponto_operacional;
+        resultadoGeral.po_mais_alertas = resultado2[0].qtd_ponto_operacional;
         resultadoGeral.qtd_alertas_po = resultado2[0].qtd_alertas;
         resultadoGeral.ambiente = resultado2[0].ambiente;
     }
@@ -108,24 +108,29 @@ function buscarPontoMaisCritico(id_empresa) {
 
 function temperaturaDoPo(id_po) {
     const instrucaoSql = `
-        SELECT
-            l.id_leitura,
-            l.temperatura,
-            DATE_FORMAT(l.data_hora, '%H:%i') AS data_hora,
-            s.identificador AS sensor,
-            po.nome AS ponto_operacional,
-            cpo.temp_min,
-            cpo.temp_max
-        FROM leitura l
-        JOIN sensor s
-            ON l.fk_sensor = s.id_sensor
-        JOIN ponto_operacional po
-            ON s.fk_po = po.id_ponto_operacional
-        JOIN configuracao_ponto_operacional cpo
-            ON po.fk_configuracao_po = cpo.id_configuracao
-        WHERE po.id_ponto_operacional = ${id_po}
-        ORDER BY l.data_hora
-        LIMIT 15;
+        SELECT * FROM 
+        (
+            SELECT
+                l.id_leitura,
+                l.temperatura,
+                DATE_FORMAT(l.data_hora, '%H:%i') AS data_hora,
+                s.identificador AS sensor,
+                po.nome AS ponto_operacional,
+                cpo.temp_min,
+                cpo.temp_max
+            FROM leitura l
+            JOIN sensor s
+                ON l.fk_sensor = s.id_sensor
+            JOIN ponto_operacional po
+                ON s.fk_po = po.id_ponto_operacional
+            JOIN configuracao_ponto_operacional cpo
+                ON po.fk_configuracao_po = cpo.id_configuracao
+            WHERE po.id_ponto_operacional = ${id_po}
+            AND data_hora >= CURDATE()
+            ORDER BY l.data_hora DESC
+            LIMIT 15;
+        ) AS pos
+        ORDER BY pos.data_hora ASC
     `;
 
     return database.executar(instrucaoSql);
