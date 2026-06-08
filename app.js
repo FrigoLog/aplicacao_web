@@ -1,5 +1,5 @@
-// var ambiente_processo = 'producao';
-var ambiente_processo = 'desenvolvimento';
+var ambiente_processo = 'producao';
+// var ambiente_processo = 'desenvolvimento';
 
 var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
 // Acima, temos o uso do operador ternário para definir o caminho do arquivo .env
@@ -15,14 +15,14 @@ var HOST_APP = process.env.APP_HOST;
 
 var app = express();
 
+
+// ADICIONAR ROUTERS FRIGOLOG
 var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 var empresaRouter = require("./src/routes/empresas");
 var leituraRouter = require("./src/routes/leitura");
 var bobiaRouter = require("./src/routes/bobia");
 var contatoRouter = require('./src/routes/contatoRoutes');
-
-// ADICIONAR ROUTERS FRIGOLOG
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -459,6 +459,7 @@
 
                         plotarEmpresas(resposta);
 
+                        document.getElementById('qtd_contatos').innerText = resposta.length;
                     });
                 } else {
                     console.error('Nenhum dado encontrado ou erro na API');
@@ -468,15 +469,7 @@
                 console.error(`Erro na obtenção dos dados: ${error.message}`);
             });
 
-            let qtdContatos = 0;
-
-        for (let i = 0; i < resposta.length; i++) {
-            qtdContatos ++;
-        }
-
-        document.getElementById('qtd_contatos').innerText = qtdContatos;
     }
-
 
     function cadastrar() {
         var razaoSocial = ipt_razao_social.value;
