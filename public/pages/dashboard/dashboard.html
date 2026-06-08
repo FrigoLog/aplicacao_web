@@ -37,7 +37,7 @@
             <span class="text">Ambientes</span>
         </div>
 
-         <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
+        <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
             <span class="icon">👨‍💻</span>
             <span class="text">Administrador</span>
         </div>
@@ -57,45 +57,51 @@
                 <div class="kpi-bar"></div>
                 <h3>Conformidade do Sistema</h3>
                 <p id="kpi_conformidade_do_sistema_porcentagem">0%</p>
-            </div>
 
-            <div class="kpi-card alerta" id="kpi_card_pos_criticos">
-                <div class="kpi-bar"></div>
-                <h3>Pontos Operacionais Críticos</h3>
-                <p id="kpi_pontos_criticos">0</p>
-            </div>
-
-            <div class="kpi-card critico" id="kpi_card_alertas">
-                <div class="kpi-bar"></div>
-                <h3>Alertas nas Últimas 24h</h3>
-                <p id="kpi_total_alertas">0</p>
-                <span id="kpi_po_alertas">-</span>
-            </div>
-
-            <div class="kpi-card critico" id="kpi_card_po_critico">
-                <div class="kpi-bar"></div>
-                <h3>Ponto Operacional Mais Crítico</h3>
-
-                <p id="kpi_po_mais_critico">
-                    -
-                </p>
-
-                <span id="kpi_diferenca_critica">
-                    -
-                </span>
-            </div>
-        </div>
-
-        <div class="graficos">
-            <div class="grafico-card">
-                <div class="grafico-header">
-                    <div class="grafico-title">
-                        <h3>Linha Temporal da Conformidade do Sistema</h3>
-                        <span class="grafico-subtitle">Percentual de leituras dentro da faixa ideal ao longo do
-                            tempo</span>
+                <div class="legenda-conformidade">
+                    <div><span class="cor-legenda verde"></span> Ótimo (>95%)</div>
+                    <div><span class="cor-legenda amarelo"></span> Alerta (85% - 95%)</div>
+                    <div><span class="cor-legenda vermelho"></span> Crítico (&lt;85%)</div>
                     </div>
+                </div>
 
-                    <!--
+                <div class="kpi-card alerta" id="kpi_card_pos_criticos">
+                    <div class="kpi-bar"></div>
+                    <h3>Pontos Operacionais Críticos</h3>
+                    <p id="kpi_pontos_criticos">0</p>
+                </div>
+
+                <div class="kpi-card critico" id="kpi_card_alertas">
+                    <div class="kpi-bar"></div>
+                    <h3>Alertas nas Últimas 24h</h3>
+                    <p id="kpi_total_alertas">0</p>
+                    <span id="kpi_po_alertas">-</span>
+                </div>
+
+                <div class="kpi-card critico" id="kpi_card_po_critico">
+                    <div class="kpi-bar"></div>
+                    <h3>Ponto Operacional Mais Crítico</h3>
+
+                    <p id="kpi_po_mais_critico">
+                        -
+                    </p>
+
+                    <span id="kpi_diferenca_critica">
+                        -
+                    </span>
+                </div>
+            </div>
+
+            <div class="graficos">
+                <div class="grafico-card">
+                    <div class="grafico-header">
+                        <div class="grafico-title">
+                            <h3>Linha Temporal da Conformidade do Sistema</h3>
+                            <span class="grafico-subtitle">Percentual de leituras dentro da faixa ideal ao longo do
+                                tempo</span>
+                        </div>
+
+                        <!--
                     <div class="grafico-filtro">
                         <label for="filtroConformidade">Período</label>
                         <select id="filtroConformidade">
@@ -105,38 +111,38 @@
                         </select>
                     </div>
                 -->
+                    </div>
+
+                    <div class="grafico-container">
+                        <canvas id="graficoConformidadeTemporal"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="graficos">
+                <div class="grafico-card">
+                    <h3>Não Conformidade por Ambiente</h3>
+                    <span class="grafico-subtitle">Percentual de leituras fora da faixa ideal por ambiente</span>
+                    <div class="grafico-container">
+                        <canvas id="graficoNaoConformidadeAmbiente"></canvas>
+                    </div>
                 </div>
 
-                <div class="grafico-container">
-                    <canvas id="graficoConformidadeTemporal"></canvas>
+                <div class="grafico-card">
+                    <h3>Status dos Pontos Operacionais</h3>
+                    <span class="grafico-subtitle">Distribuição entre PO's normais, em alerta e críticos</span>
+                    <div class="grafico-container">
+                        <canvas id="graficoStatusAmbientes"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="graficos">
-            <div class="grafico-card">
-                <h3>Não Conformidade por Ambiente</h3>
-                <span class="grafico-subtitle">Percentual de leituras fora da faixa ideal por ambiente</span>
-                <div class="grafico-container">
-                    <canvas id="graficoNaoConformidadeAmbiente"></canvas>
-                </div>
-            </div>
-
-            <div class="grafico-card">
-                <h3>Status dos Pontos Operacionais</h3>
-                <span class="grafico-subtitle">Distribuição entre PO's normais, em alerta e críticos</span>
-                <div class="grafico-container">
-                    <canvas id="graficoStatusAmbientes"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 <script>
 
-     if(sessionStorage.TIPO_USUARIO == "admin_empresa") {
+    if (sessionStorage.TIPO_USUARIO == "admin_empresa") {
         menuitem_admin.classList.remove("nome")
-     };
+    };
 
     const ID_EMPRESA = sessionStorage.ID_EMPRESA;
     plotarGrafico();
@@ -252,11 +258,15 @@
 
         const horas = [];
         const conformidades = [];
+        let linhaNormal = [];
+        let linhaAlerta = [];
 
         let primeiraHora = dadosConformidade[0].hora.slice(11, 13);
 
         for (let i = Number(primeiraHora); i < 24; i++) {
             horas.push(`${i}:00`);
+            linhaNormal.push(96);
+            linhaAlerta.push(85);
         }
 
         for (let i = 0; i < dadosConformidade.length; i++) {
@@ -300,7 +310,31 @@
                         borderWidth: 3,
                         tension: 0.4,
                         fill: false
-                    }]
+                    },
+                    {
+                        label: "Linha Normal",
+                        data: linhaNormal,
+                        borderColor: "#00ff00",
+                        borderWidth: 2,
+                        borderDash: [8, 4], // tracejado
+                        pointRadius: 0,     // remove os pontos
+                        pointHoverRadius: 0,
+                        tension: 0,
+                        fill: false
+                    },
+                    {
+                        label: "Linha critico",
+                        data: linhaAlerta,
+                        borderColor: "#ff0000",
+                        borderWidth: 2,
+                        borderDash: [8, 4], // tracejado
+                        pointRadius: 0,     // remove os pontos
+                        pointHoverRadius: 0,
+                        tension: 0,
+                        fill: true,
+                        backgroundColor: "rgba(255, 0, 0, 0.1)"
+                    }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -464,8 +498,8 @@
 
     async function kpiPontosCriticos() {
 
-        const resultado = await obterPontosCriticos();
-        const quantidade = Number(resultado[0].quantidade);
+        const pontosMaisCriticos = await obterPontoMaisCritico();
+        const quantidade = pontosMaisCriticos.length;
 
         kpi_pontos_criticos.innerHTML = quantidade;
 

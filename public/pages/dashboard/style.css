@@ -466,3 +466,35 @@ button:hover {
     background: white;
     cursor: pointer;
 }
+
+.legenda-conformidade {
+    margin-top: 10px;
+    font-size: 12px;
+    text-align: left;
+}
+
+.legenda-conformidade div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.cor-legenda {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.verde {
+    background-color: #2ecc71;
+}
+
+.amarelo {
+    background-color: #f1c40f;
+}
+
+.vermelho {
+    background-color: #e74c3c;
+}
