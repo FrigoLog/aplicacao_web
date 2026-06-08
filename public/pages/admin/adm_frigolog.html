@@ -101,13 +101,13 @@
     <div class="inicio-grid">
         <div class="card-inicio">
             <span class="kpi-span">Leads gerados</span>
-            <h1>-</h1>
+            <h1 id="qtd_contatos">-</h1>
             <span class="subspan">Esse é o número de usuários que enviaram suas informações de contatos</span>
             <button class="btns-inicio" onclick="alterarConteudo('mensagens')">Ver Mais</button>
         </div>
         <div class="card-inicio">
             <span class="kpi-span">Empresas Cadastradas</span>
-            <h1>-</h1>
+            <h1 id="qtd_empresas">-</h1>
             <span class="subspan">Quantidade de empresas no nosso sistema, clique abaixo para cadastrar uma nova</span>
             <button class="btns-inicio" onclick="alterarConteudo('cadastrar_empresa')">Cadastrar</button>
         </div>
@@ -135,9 +135,7 @@
     </section>
     </div>
     </div>
-
-    
-
+    <!--INICIO-->
 
 
     <div class="conteudo" id="mensagens">
@@ -439,6 +437,44 @@
                 <div>${ultimasMensagens[i].codigo_cadastro}</div>
                 </div>`
         }
+
+        // Pegando a quantidade de empresas e adicionando no card do inicio
+        let qtdEmpresas = 0;
+
+        for (let i = 0; i < resposta.length; i++) {
+            qtdEmpresas ++;
+        }
+
+        document.getElementById('qtd_empresas').innerText = qtdEmpresas;
+
+    }
+
+    function preencherContatos(){
+
+        fetch('/contatoRoutes/mensagensContatos')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarEmpresas(resposta);
+
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+
+            let qtdContatos = 0;
+
+        for (let i = 0; i < resposta.length; i++) {
+            qtdContatos ++;
+        }
+
+        document.getElementById('qtd_contatos').innerText = qtdContatos;
     }
 
 
