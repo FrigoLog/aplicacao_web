@@ -73,34 +73,60 @@
         </div>
 
         <div class="subconteudo" id="dashboardPO">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 100px;">
-                <h1 id="nome_po" style="font-size: 40px; font-family: Arial, Helvetica, sans-serif; color: #fff;">PO
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; gap:16px;">
+                <h1 id="nome_po"
+                    style="font-size:36px; font-family:Arial,Helvetica,sans-serif; color:#fff; white-space:nowrap;">PO
                 </h1>
+                <button onclick="voltarPO()"
+                    style="padding:10px 20px; border:1px solid rgba(255,255,255,0.2); white-space:nowrap; align-self:center;">←
+                    Voltar
+                </button>
+            </div>
 
-                <div style="display: flex; align-items: center; justify-content: space-around; width: 60%;">
-                    <div class="kpis" style="width: 80%;">
-                        <!-- Temperatura atual -->
-                        <div class="kpi-card otimo" id="kpi_card_temperatura">
-                            <div class="kpi-bar"></div>
-                            <h3>Temperatura atual</h3>
-                            <p id="kpi_temperatura_atual">0</p>
-                        </div>
 
-                        <!-- Alertas gerados-->
-                        <div class="kpi-card critico" id="kpi_card_alertas">
-                            <div class="kpi-bar"></div>
-                            <h3>Alertas nas Últimas 24h</h3>
-                            <p id="kpi_total_alertas">0</p>
-                        </div>
-                    </div>
-
-                    <button onclick="voltarPO()">Voltar</button>
+            <div class="kpis" style="flex: 1; margin-bottom: 20px;">
+                <div class="kpi-card otimo" id="kpi_card_temperatura">
+                    <div class="kpi-bar"></div>
+                    <h3>Temperatura atual</h3>
+                    <p id="kpi_temperatura_atual">0</p>
+                </div>
+                <div class="kpi-card critico" id="kpi_card_alertas">
+                    <div class="kpi-bar"></div>
+                    <h3>Alertas nas Últimas 24h</h3>
+                    <p id="kpi_total_alertas">0</p>
                 </div>
             </div>
 
-            <div style="height: 60vh;">
-                <canvas id="grafico_temperatura" style="background-color: aliceblue;"></canvas>
+            <div class="kpis" style="margin-bottom:20px;">
+                <div class="kpi-card otimo" id="kpi_card_min">
+                    <div class="kpi-bar"></div>
+                    <h3>Mínima do Período</h3>
+                    <p id="kpi_min_periodo">0</p>
+                </div>
+                <div class="kpi-card otimo" id="kpi_card_max">
+                    <div class="kpi-bar"></div>
+                    <h3>Máxima do Período</h3>
+                    <p id="kpi_max_periodo">0</p>
+                </div>
+                <div class="kpi-card otimo" id="kpi_card_ref_min">
+                    <div class="kpi-bar"></div>
+                    <h3>Mínima Ideal (ref.)</h3>
+                    <p id="kpi_ref_min">0</p>
+                </div>
+                <div class="kpi-card otimo" id="kpi_card_ref_max">
+                    <div class="kpi-bar"></div>
+                    <h3>Máxima Ideal (ref.)</h3>
+                    <p id="kpi_ref_max">0</p>
+                </div>
             </div>
+
+            <div style="background:white; border-radius:12px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,.1);">
+                <h3 style="font-size:13px; color:#555; margin-bottom:16px;">Histórico de Temperatura</h3>
+                <div style="height:260px; position:relative;">
+                    <canvas id="grafico_temperatura"></canvas>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>
@@ -209,7 +235,6 @@
         conteudoPO.style.display = "block";
     }
 
-
     function filtrarPO() {
         let nome_ipt = ipt_busca_po.value;
         let pos_filtrados = [];
@@ -225,11 +250,10 @@
 
     }
 
-
     async function detalharPO(id_po) {
         conteudoPO.style.display = "none";
         dashboardPO.style.display = "block";
-        
+
         poAtual = id_po;
 
         const resTemp = await fetch("/leituras/temperaturas_po/" + id_po);
@@ -278,9 +302,36 @@
         const temp_min = temp[0].temp_min;
         const temp_max = temp[0].temp_max;
 
+        document.getElementById('kpi_ref_min').innerHTML = temp_min + '°C';
+        document.getElementById('kpi_ref_max').innerHTML = temp_max + '°C';
+
         for (let i = 0; i < temp.length; i++) {
             temperaturas.push(Number(temp[i].temperatura));
             data_hora.push(temp[i].data_hora);
+        }
+
+        const minPeriodo = Math.min(...temperaturas);
+        const maxPeriodo = Math.max(...temperaturas);
+
+        document.getElementById('kpi_min_periodo').innerHTML = minPeriodo.toFixed(1) + '°C';
+        document.getElementById('kpi_max_periodo').innerHTML = maxPeriodo.toFixed(1) + '°C';
+
+        const kpiMax = document.getElementById('kpi_card_max');
+        if ((maxPeriodo - temp_max) >= 5 || (temp_min - maxPeriodo) >= 5) {
+            kpiMax.className = "kpi-card critico";
+        } else if ((maxPeriodo - temp_max) >= 3 || (temp_min - maxPeriodo) >= 3) {
+            kpiMax.className = "kpi-card alerta";
+        } else {
+            kpiMax.className = "kpi-card otimo";
+        }
+
+        const kpiMin = document.getElementById('kpi_card_min');
+        if ((minPeriodo - temp_max) >= 5 || (temp_min - minPeriodo) >= 5) {
+            kpiMin.className = "kpi-card critico";
+        } else if ((minPeriodo - temp_max) >= 3 || (temp_min - minPeriodo) >= 3) {
+            kpiMin.className = "kpi-card alerta";
+        } else {
+            kpiMin.className = "kpi-card otimo";
         }
 
 
@@ -291,7 +342,7 @@
         }
 
         const ultima_temperatura = temperaturas[temperaturas.length - 1];
-        kpi_temperatura_atual.innerHTML = ultima_temperatura;
+        kpi_temperatura_atual.innerHTML = ultima_temperatura + " °C";
 
         if ((ultima_temperatura - temp_max) >= 5 || (temp_min - ultima_temperatura) >= 5) {
             // Critico
