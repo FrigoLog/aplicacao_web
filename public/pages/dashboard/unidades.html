@@ -39,7 +39,7 @@
             <span class="text">Ambientes</span>
         </div>
 
-         <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
+        <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
             <span class="icon">👨‍💻</span>
             <span class="text">Administrador</span>
         </div>
@@ -74,7 +74,8 @@
 
         <div class="subconteudo" id="dashboardPO">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 100px;">
-                <h1 id="nome_po" style="font-size: 40px; font-family: Arial, Helvetica, sans-serif; color: #fff;">PO</h1>
+                <h1 id="nome_po" style="font-size: 40px; font-family: Arial, Helvetica, sans-serif; color: #fff;">PO
+                </h1>
 
                 <div style="display: flex; align-items: center; justify-content: space-around; width: 60%;">
                     <div class="kpis" style="width: 80%;">
@@ -105,14 +106,16 @@
 </body>
 <script>
 
-    if(sessionStorage.TIPO_USUARIO == "admin_empresa") {
+    if (sessionStorage.TIPO_USUARIO == "admin_empresa") {
         menuitem_admin.classList.remove("nome")
-     };
+    };
 
     let ambientes = [];
     let pos = [];
     let ambientePO = 0;
     let graficoTemperatura = null;
+    let poAtual = null;
+    let intervalo = null;
 
     listarAmbientes()
     async function listarAmbientes() {
@@ -210,14 +213,31 @@
 
     }
 
+
     async function detalharPO(id_po) {
         conteudoPO.style.display = "none";
         dashboardPO.style.display = "block";
+        
+        poAtual = id_po;
 
         const resTemp = await fetch("/leituras/temperaturas_po/" + id_po);
         const temperaturas = await resTemp.json();
 
         const resAlertas = await fetch("/leituras/alertas_po/" + id_po);
+        const alertas = await resAlertas.json();
+
+        renderizarDashPO(temperaturas, alertas);
+
+        clearInterval(intervalo);
+
+        intervalo = setInterval(atualizarPO, 5000);
+    }
+
+    async function atualizarPO() {
+        const resTemp = await fetch("/leituras/temperaturas_po/" + poAtual);
+        const temperaturas = await resTemp.json();
+
+        const resAlertas = await fetch("/leituras/alertas_po/" + poAtual);
         const alertas = await resAlertas.json();
 
         renderizarDashPO(temperaturas, alertas);
@@ -238,7 +258,7 @@
         }
     }
 
-    function renderizarDashPO(temp, alertas) {
+    function renderizarDashPO(temp, alertas, id_po) {
         nome_po.innerHTML = `${temp[0].ponto_operacional}`;
 
         const temperaturas = [];
@@ -249,6 +269,13 @@
         for (let i = 0; i < temp.length; i++) {
             temperaturas.push(Number(temp[i].temperatura));
             data_hora.push(temp[i].data_hora);
+        }
+
+
+        if (graficoTemperatura != null) {
+            graficoTemperatura.data.labels = data_hora;
+            graficoTemperatura.data.datasets[0].data = temperaturas;
+            graficoTemperatura.update();
         }
 
         const ultima_temperatura = temperaturas[temperaturas.length - 1];
@@ -344,10 +371,7 @@
     }
 
     function voltarPO() {
-        if (graficoTemperatura != null) {
-            graficoTemperatura.destroy();
-            graficoTemperatura = null;
-        }
+        clearInterval(intervalo);
 
         abrirPO(ambientePO);
     }

@@ -81,10 +81,10 @@ async function buscarAlertas24h(id_empresa) {
         ambiente: null
     }
 
-    if (resultado1[0].total_alertas > 0) {
+    if (resultadoGeral.qtd_total_alertas > 0) {
         let resultado2 = await database.executar(instrucaoSql2);
 
-        resultadoGeral.po_mais_alertas = resultado2[0].qtd_ponto_operacional;
+        resultadoGeral.po_mais_alertas = resultado2[0].ponto_operacional;
         resultadoGeral.qtd_alertas_po = resultado2[0].qtd_alertas;
         resultadoGeral.ambiente = resultado2[0].ambiente;
     }
@@ -117,7 +117,8 @@ function temperaturaDoPo(id_po) {
                 s.identificador AS sensor,
                 po.nome AS ponto_operacional,
                 cpo.temp_min,
-                cpo.temp_max
+                cpo.temp_max,
+                l.data_hora AS data_real
             FROM leitura l
             JOIN sensor s
                 ON l.fk_sensor = s.id_sensor
@@ -128,9 +129,9 @@ function temperaturaDoPo(id_po) {
             WHERE po.id_ponto_operacional = ${id_po}
             AND data_hora >= CURDATE()
             ORDER BY l.data_hora DESC
-            LIMIT 15;
+            LIMIT 15
         ) AS pos
-        ORDER BY pos.data_hora ASC
+        ORDER BY data_real ASC;
     `;
 
     return database.executar(instrucaoSql);

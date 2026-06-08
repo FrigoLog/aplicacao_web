@@ -253,21 +253,25 @@
         const horas = [];
         const conformidades = [];
 
-        for (let i = 0; i < dadosConformidade.length; i++) {
-            horas.push(
-                dadosConformidade[i].hora.slice(11, 16)
-            );
+        let primeiraHora = dadosConformidade[0].hora.slice(11, 13);
 
+        for (let i = Number(primeiraHora); i < 24; i++) {
+            horas.push(`${i}:00`);
+        }
+
+        for (let i = 0; i < dadosConformidade.length; i++) {
             conformidades.push(
                 Number(dadosConformidade[i].conformidade)
             );
         }
 
+
+
         // Adiciona o gráfico de conformidade do sistema
         const ctxConformidade = document.getElementById('graficoConformidadeTemporal');
 
         if (graficoConformidade != null) {
-            graficoConformidade.datasets.data = conformidades;
+            graficoConformidade.data.datasets[0].data = conformidades;
             graficoConformidade.update();
         }
         else {
@@ -333,7 +337,7 @@
         const ctxNaoConformidade = document.getElementById('graficoNaoConformidadeAmbiente');
 
         if (graficoNaoConformidade != null) {
-            graficoNaoConformidade.datasets.data = porcentagemNaoConformidade;
+            graficoNaoConformidade.data.datasets[0].data = porcentagemNaoConformidade;
             graficoConformidade.labels = ambientesNaoConformidade;
 
             graficoNaoConformidade.update();
@@ -393,7 +397,7 @@
         const ctxStatusAmbientes = document.getElementById('graficoStatusAmbientes');
 
         if (graficoStatusAmbiente != null) {
-            graficoStatusAmbiente.datasets.data = [normal, alerta, critico];
+            graficoStatusAmbiente.data.datasets[0].data = [normal, alerta, critico];
             graficoStatusAmbiente.update();
         }
         else {
@@ -465,10 +469,10 @@
 
         kpi_pontos_criticos.innerHTML = quantidade;
 
-        if (quantidade < 5) {
+        if (quantidade < 3) {
             kpi_card_pos_criticos.className = "kpi-card otimo";
         }
-        else if (quantidade < 10) {
+        else if (quantidade < 5) {
             kpi_card_pos_criticos.className = "kpi-card alerta";
         }
         else {
@@ -483,7 +487,7 @@
 
         kpi_total_alertas.innerHTML = qtd_alertas;
 
-        if (dados.po_mais_alertas != null && dados.ambiente != null) {
+        if (qtd_alertas > 0) {
             kpi_po_alertas.innerHTML =
                 `PO com mais alertas: ${dados.po_mais_alertas} (${dados.ambiente})`;
         }
