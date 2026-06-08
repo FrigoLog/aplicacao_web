@@ -62,46 +62,54 @@
                     <div><span class="cor-legenda verde"></span> Ótimo (>95%)</div>
                     <div><span class="cor-legenda amarelo"></span> Alerta (85% - 95%)</div>
                     <div><span class="cor-legenda vermelho"></span> Crítico (&lt;85%)</div>
-                    </div>
-                </div>
-
-                <div class="kpi-card alerta" id="kpi_card_pos_criticos">
-                    <div class="kpi-bar"></div>
-                    <h3>Pontos Operacionais Críticos</h3>
-                    <p id="kpi_pontos_criticos">0</p>
-                </div>
-
-                <div class="kpi-card critico" id="kpi_card_alertas">
-                    <div class="kpi-bar"></div>
-                    <h3>Alertas nas Últimas 24h</h3>
-                    <p id="kpi_total_alertas">0</p>
-                    <span id="kpi_po_alertas">-</span>
-                </div>
-
-                <div class="kpi-card critico" id="kpi_card_po_critico">
-                    <div class="kpi-bar"></div>
-                    <h3>Ponto Operacional Mais Crítico</h3>
-
-                    <p id="kpi_po_mais_critico">
-                        -
-                    </p>
-
-                    <span id="kpi_diferenca_critica">
-                        -
-                    </span>
                 </div>
             </div>
 
-            <div class="graficos">
-                <div class="grafico-card">
-                    <div class="grafico-header">
-                        <div class="grafico-title">
-                            <h3>Linha Temporal da Conformidade do Sistema</h3>
-                            <span class="grafico-subtitle">Percentual de leituras dentro da faixa ideal ao longo do
-                                tempo</span>
-                        </div>
+            <div class="kpi-card alerta" id="kpi_card_pos_criticos">
+                <div class="kpi-bar"></div>
+                <h3>Pontos Operacionais Críticos</h3>
 
-                        <!--
+                <p id="kpi_pontos_criticos">0</p>
+
+                <span>3 Pontos Operacionais Mais Críticos:</span>
+                <ul id="kpi_top_criticos"></ul>
+            </div>
+
+            <div class="kpi-card critico" id="kpi_card_alertas">
+                <div class="kpi-bar"></div>
+                <h3>Alertas nas Últimas 24h</h3>
+                <p id="kpi_total_alertas">0</p>
+                <span id="kpi_po_alertas">-</span>
+            </div>
+
+            <div class="kpi-card critico" id="kpi_card_po_critico">
+                <div class="kpi-bar"></div>
+                <h3>Ponto Operacional Mais Crítico</h3>
+
+                <p id="kpi_po_mais_critico">
+                    -
+                </p>
+
+                <span id="kpi_diferenca_critica">
+                    -
+                </span>
+
+                <button id="btn_ver_po_critico" onclick="irParaPontoCritico()">
+                    Ver Detalhes
+                </button>
+            </div>
+        </div>
+
+        <div class="graficos">
+            <div class="grafico-card">
+                <div class="grafico-header">
+                    <div class="grafico-title">
+                        <h3>Linha Temporal da Conformidade do Sistema</h3>
+                        <span class="grafico-subtitle">Percentual de leituras dentro da faixa ideal ao longo do
+                            tempo</span>
+                    </div>
+
+                    <!--
                     <div class="grafico-filtro">
                         <label for="filtroConformidade">Período</label>
                         <select id="filtroConformidade">
@@ -111,32 +119,32 @@
                         </select>
                     </div>
                 -->
-                    </div>
-
-                    <div class="grafico-container">
-                        <canvas id="graficoConformidadeTemporal"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="graficos">
-                <div class="grafico-card">
-                    <h3>Não Conformidade por Ambiente</h3>
-                    <span class="grafico-subtitle">Percentual de leituras fora da faixa ideal por ambiente</span>
-                    <div class="grafico-container">
-                        <canvas id="graficoNaoConformidadeAmbiente"></canvas>
-                    </div>
                 </div>
 
-                <div class="grafico-card">
-                    <h3>Status dos Pontos Operacionais</h3>
-                    <span class="grafico-subtitle">Distribuição entre PO's normais, em alerta e críticos</span>
-                    <div class="grafico-container">
-                        <canvas id="graficoStatusAmbientes"></canvas>
-                    </div>
+                <div class="grafico-container">
+                    <canvas id="graficoConformidadeTemporal"></canvas>
                 </div>
             </div>
         </div>
+
+        <div class="graficos">
+            <div class="grafico-card">
+                <h3>Não Conformidade por Ambiente</h3>
+                <span class="grafico-subtitle">Percentual de leituras fora da faixa ideal por ambiente</span>
+                <div class="grafico-container">
+                    <canvas id="graficoNaoConformidadeAmbiente"></canvas>
+                </div>
+            </div>
+
+            <div class="grafico-card">
+                <h3>Status dos Pontos Operacionais</h3>
+                <span class="grafico-subtitle">Distribuição entre PO's normais, em alerta e críticos</span>
+                <div class="grafico-container">
+                    <canvas id="graficoStatusAmbientes"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script>
 
@@ -177,6 +185,11 @@
         if (valor > 95) return '#2ecc71';
         if (valor >= 85) return '#f1c40f';
         return '#e74c3c';
+    }
+
+    let poMaisCritico = null;
+    function irParaPontoCritico() {
+        window.location.href = `unidades.html?ambiente=${poMaisCritico.id_ambiente}&po=${poMaisCritico.id_ponto_operacional}`;
     }
 
     // Obtem a conformidade do sistema
@@ -498,10 +511,28 @@
 
     async function kpiPontosCriticos() {
 
-        const pontosMaisCriticos = await obterPontoMaisCritico();
-        const quantidade = pontosMaisCriticos.length;
+        const pontosCriticos = await obterPontoMaisCritico();
+
+        const quantidade = pontosCriticos.length;
 
         kpi_pontos_criticos.innerHTML = quantidade;
+
+        kpi_top_criticos.innerHTML = "";
+
+        const limite = quantidade >= 3 ? 3 : quantidade;
+
+        for (let i = 0; i < limite; i++) {
+
+            kpi_top_criticos.innerHTML += `
+            <a
+                href="unidades.html?ambiente=${pontosCriticos[i].id_ambiente}&po=${pontosCriticos[i].id_ponto_operacional}"
+                class="link-po-critico"
+            >
+                ${pontosCriticos[i].nome_ambiente} → ${pontosCriticos[i].ponto_operacional}
+            </a>
+            <br>
+        `;
+        }
 
         if (quantidade < 3) {
             kpi_card_pos_criticos.className = "kpi-card otimo";
@@ -548,6 +579,8 @@
         if (dados.length === 0) {
             return;
         }
+
+        poMaisCritico = dados[0];
 
         const diferenca = dados[0].diferenca;
 

@@ -105,6 +105,19 @@
     </div>
 </body>
 <script>
+    window.onload = async () => {
+        const params = new URLSearchParams(window.location.search);
+
+        const ambiente = params.get("ambiente");
+        const po = params.get("po");
+
+        if (ambiente && po) {
+            await abrirPO(ambiente);
+            await detalharPO(po);
+        } else {
+            listarAmbientes();
+        }
+    }
 
     if (sessionStorage.TIPO_USUARIO == "admin_empresa") {
         menuitem_admin.classList.remove("nome")
@@ -117,7 +130,6 @@
     let poAtual = null;
     let intervalo = null;
 
-    listarAmbientes()
     async function listarAmbientes() {
         conteudoPO.style.display = "none";
         dashboardPO.style.display = "none";
