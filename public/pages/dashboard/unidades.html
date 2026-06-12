@@ -39,7 +39,7 @@
             <span class="text">Ambientes</span>
         </div>
 
-         <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
+        <div class="menu-item nome" onclick="window.location='./adm_empresa.html'" id="menuitem_admin">
             <span class="icon">👨‍💻</span>
             <span class="text">Administrador</span>
         </div>
@@ -73,48 +73,102 @@
         </div>
 
         <div class="subconteudo" id="dashboardPO">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 100px;">
-                <h1 id="nome_po" style="font-size: 40px; font-family: Arial, Helvetica, sans-serif; color: #fff;">PO</h1>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; gap:16px;">
+                <h1 id="nome_po"
+                    style="font-size:36px; font-family:Arial,Helvetica,sans-serif; color:#fff; white-space:nowrap;">PO
+                </h1>
+                <button onclick="voltarPO()"
+                    style="padding:10px 20px; border:1px solid rgba(255,255,255,0.2); white-space:nowrap; align-self:center;">←
+                    Voltar
+                </button>
+            </div>
 
-                <div style="display: flex; align-items: center; justify-content: space-around; width: 60%;">
-                    <div class="kpis" style="width: 80%;">
-                        <!-- Temperatura atual -->
-                        <div class="kpi-card otimo" id="kpi_card_temperatura">
-                            <div class="kpi-bar"></div>
-                            <h3>Temperatura atual</h3>
-                            <p id="kpi_temperatura_atual">0</p>
-                        </div>
 
-                        <!-- Alertas gerados-->
-                        <div class="kpi-card critico" id="kpi_card_alertas">
-                            <div class="kpi-bar"></div>
-                            <h3>Alertas nas Últimas 24h</h3>
-                            <p id="kpi_total_alertas">0</p>
-                        </div>
-                    </div>
-
-                    <button onclick="voltarPO()">Voltar</button>
+            <div class="kpis" style="flex: 1; margin-bottom: 20px;">
+                <div class="kpi-card otimo" id="kpi_card_temperatura">
+                    <div class="kpi-bar"></div>
+                    <h3>Temperatura atual</h3>
+                    <p id="kpi_temperatura_atual">0</p>
+                </div>
+                <div class="kpi-card critico" id="kpi_card_alertas">
+                    <div class="kpi-bar"></div>
+                    <h3>Alertas nas Últimas 24h</h3>
+                    <p id="kpi_total_alertas">0</p>
                 </div>
             </div>
 
-            <div style="height: 60vh;">
-                <canvas id="grafico_temperatura" style="background-color: aliceblue;"></canvas>
+            <div class="kpis" style="margin-bottom:20px;">
+                <div class="kpi-card otimo" id="kpi_card_min">
+                    <div class="kpi-bar"></div>
+                    <h3>Mínima do Período</h3>
+                    <p id="kpi_min_periodo">0</p>
+                </div>
+                <div class="kpi-card otimo" id="kpi_card_max">
+                    <div class="kpi-bar"></div>
+                    <h3>Máxima do Período</h3>
+                    <p id="kpi_max_periodo">0</p>
+                </div>
+                <div class="kpi-card otimo" id="kpi_card_ref_min">
+                    <div class="kpi-bar"></div>
+                    <h3>Mínima Ideal (ref.)</h3>
+                    <p id="kpi_ref_min">0</p>
+                </div>
+                <div class="kpi-card otimo" id="kpi_card_ref_max">
+                    <div class="kpi-bar"></div>
+                    <h3>Máxima Ideal (ref.)</h3>
+                    <p id="kpi_ref_max">0</p>
+                </div>
             </div>
+
+            <div style="background:white; border-radius:12px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,.1);">
+                <h3 style="font-size:13px; color:#555; margin-bottom:16px;">Histórico de Temperatura</h3>
+                <div style="height:260px; position:relative;">
+                    <canvas id="grafico_temperatura"></canvas>
+                </div>
+            </div>
+
+            <div style="margin-top: 12px; padding: 12px 16px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #444; line-height: 1.6;">
+                <strong>Interpretação do gráfico:</strong><br>
+
+                🟢 <strong>Verde:</strong> temperatura dentro da faixa ideal definida para este Ponto Operacional (entre
+                a temperatura mínima e máxima de referência).<br>
+
+                🟡 <strong>Amarelo:</strong> temperatura fora da faixa ideal, com diferença de até <strong>3°C</strong>
+                em relação ao limite mais próximo.<br>
+
+                🔴 <strong>Vermelho:</strong> temperatura com diferença superior a <strong>3°C</strong> da faixa ideal,
+                indicando situação crítica que exige atenção imediata.
+            </div>
+
         </div>
     </div>
 </body>
 <script>
+    window.onload = async () => {
+        const params = new URLSearchParams(window.location.search);
 
-    if(sessionStorage.TIPO_USUARIO == "admin_empresa") {
+        const ambiente = params.get("ambiente");
+        const po = params.get("po");
+
+        if (ambiente && po) {
+            await abrirPO(ambiente);
+            await detalharPO(po);
+        } else {
+            listarAmbientes();
+        }
+    }
+
+    if (sessionStorage.TIPO_USUARIO == "admin_empresa") {
         menuitem_admin.classList.remove("nome")
-     };
+    };
 
     let ambientes = [];
     let pos = [];
     let ambientePO = 0;
     let graficoTemperatura = null;
+    let poAtual = null;
+    let intervalo = null;
 
-    listarAmbientes()
     async function listarAmbientes() {
         conteudoPO.style.display = "none";
         dashboardPO.style.display = "none";
@@ -194,7 +248,6 @@
         conteudoPO.style.display = "block";
     }
 
-
     function filtrarPO() {
         let nome_ipt = ipt_busca_po.value;
         let pos_filtrados = [];
@@ -214,10 +267,26 @@
         conteudoPO.style.display = "none";
         dashboardPO.style.display = "block";
 
+        poAtual = id_po;
+
         const resTemp = await fetch("/leituras/temperaturas_po/" + id_po);
         const temperaturas = await resTemp.json();
 
         const resAlertas = await fetch("/leituras/alertas_po/" + id_po);
+        const alertas = await resAlertas.json();
+
+        renderizarDashPO(temperaturas, alertas);
+
+        clearInterval(intervalo);
+
+        intervalo = setInterval(atualizarPO, 5000);
+    }
+
+    async function atualizarPO() {
+        const resTemp = await fetch("/leituras/temperaturas_po/" + poAtual);
+        const temperaturas = await resTemp.json();
+
+        const resAlertas = await fetch("/leituras/alertas_po/" + poAtual);
         const alertas = await resAlertas.json();
 
         renderizarDashPO(temperaturas, alertas);
@@ -238,27 +307,70 @@
         }
     }
 
-    function renderizarDashPO(temp, alertas) {
+    function renderizarDashPO(temp, alertas, id_po) {
         nome_po.innerHTML = `${temp[0].ponto_operacional}`;
 
         const temperaturas = [];
         const data_hora = [];
+
+        const linhaTempMax = [];
+        const linhaTempMin = [];
+
         const temp_min = temp[0].temp_min;
         const temp_max = temp[0].temp_max;
+
+        document.getElementById('kpi_ref_min').innerHTML = temp_min + '°C';
+        document.getElementById('kpi_ref_max').innerHTML = temp_max + '°C';
 
         for (let i = 0; i < temp.length; i++) {
             temperaturas.push(Number(temp[i].temperatura));
             data_hora.push(temp[i].data_hora);
         }
 
-        const ultima_temperatura = temperaturas[temperaturas.length - 1];
-        kpi_temperatura_atual.innerHTML = ultima_temperatura;
+        for (let i = 0; i < data_hora.length; i++) {
+            linhaTempMax.push(temp_max);
+            linhaTempMin.push(temp_min);
+        }
 
-        if ((ultima_temperatura - temp_max) >= 5 || (temp_min - ultima_temperatura) >= 5) {
+        const minPeriodo = Math.min(...temperaturas);
+        const maxPeriodo = Math.max(...temperaturas);
+
+        document.getElementById('kpi_min_periodo').innerHTML = minPeriodo.toFixed(1) + '°C';
+        document.getElementById('kpi_max_periodo').innerHTML = maxPeriodo.toFixed(1) + '°C';
+
+        const kpiMax = document.getElementById('kpi_card_max');
+        if ((maxPeriodo - temp_max) >= 5 || (temp_min - maxPeriodo) >= 5) {
+            kpiMax.className = "kpi-card critico";
+        } else if ((maxPeriodo - temp_max) >= 3 || (temp_min - maxPeriodo) >= 3) {
+            kpiMax.className = "kpi-card alerta";
+        } else {
+            kpiMax.className = "kpi-card otimo";
+        }
+
+        const kpiMin = document.getElementById('kpi_card_min');
+        if ((minPeriodo - temp_max) >= 5 || (temp_min - minPeriodo) >= 5) {
+            kpiMin.className = "kpi-card critico";
+        } else if ((minPeriodo - temp_max) >= 3 || (temp_min - minPeriodo) >= 3) {
+            kpiMin.className = "kpi-card alerta";
+        } else {
+            kpiMin.className = "kpi-card otimo";
+        }
+
+
+        if (graficoTemperatura != null) {
+            graficoTemperatura.data.labels = data_hora;
+            graficoTemperatura.data.datasets[0].data = temperaturas;
+            graficoTemperatura.update();
+        }
+
+        const ultima_temperatura = temperaturas[temperaturas.length - 1];
+        kpi_temperatura_atual.innerHTML = ultima_temperatura + " °C";
+
+        if ((ultima_temperatura - temp_max) >= 3 || (temp_min - ultima_temperatura) >= 3) {
             // Critico
             kpi_card_temperatura.className = "kpi-card critico";
         }
-        else if (((ultima_temperatura - temp_max) >= 3 || (temp_min - ultima_temperatura) >= 3)) {
+        else if (((ultima_temperatura - temp_max) >= 1 || (temp_min - ultima_temperatura) >= 1)) {
             // Alerta
             kpi_card_temperatura.className = "kpi-card alerta";
         }
@@ -305,12 +417,35 @@
                         pointBackgroundColor: temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max)),
                         pointBorderColor: temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max)),
 
-                        pointRadius: 6,
+                        pointRadius: 3,
                         pointHoverRadius: 8,
                         borderWidth: 3,
                         tension: 0.4,
                         fill: false
-                    }]
+                    },
+                    {
+                        label: "Linha Temperatura Ideal Máxima",
+                        data: linhaTempMax,
+                        borderColor: "#00ff00",
+                        borderWidth: 2,
+                        borderDash: [8, 4],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        tension: 0,
+                        fill: false
+                    },
+                    {
+                        label: "Linha Temperatura Ideal Mínima",
+                        data: linhaTempMin,
+                        borderColor: "#00ff00",
+                        borderWidth: 2,
+                        borderDash: [8, 4],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        tension: 0,
+                        fill: false
+                    },
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -344,10 +479,7 @@
     }
 
     function voltarPO() {
-        if (graficoTemperatura != null) {
-            graficoTemperatura.destroy();
-            graficoTemperatura = null;
-        }
+        clearInterval(intervalo);
 
         abrirPO(ambientePO);
     }

@@ -219,6 +219,83 @@ body {
    font-size: 30px;
 }
 
+.inicio-grid{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    justify-self: center;
+}
+
+.card-inicio{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-direction: column;
+    width: 80%;
+    background: white;
+    align-items: center;
+    border-radius: 10px;
+    border: 3px solid #7b97ec;
+    padding: 10px;
+    background-color: #ffffff;
+    margin-top: 20px;
+    transition: 0.5s;
+}
+
+.card-inicio:hover {
+    transform: translateY(-5px);
+}
+
+.kpi-span{
+    font-size: medium;
+    font-weight: 600;
+    color: rgb(112, 112, 112);
+}
+
+.subspan{
+    font-size: small;
+    font-weight: 300;
+    color: rgb(43, 42, 42);
+    text-align: center;
+}
+
+.btns-inicio{
+    font-size: small;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #4d72ec;
+    color: white;
+    padding: 5px;
+    align-self: self-start;
+    margin-top: 10px;
+    transition: 0.5s;
+}
+
+.btns-inicio:hover{
+    transform: scale(1.1);
+}
+
+.section-novidade{
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 20px;
+    transition: 500ms;
+    cursor: pointer;
+}
+
+.section-novidade:hover{
+    transform: translateX(-5px);
+}
+
 /* TABELA CONTATOS E EMPRESAS CADASTRADAS ----------------------------------------*/
 
 .caixa_conteudo_contatos {

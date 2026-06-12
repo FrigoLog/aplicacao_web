@@ -92,9 +92,50 @@
     </div>
     <!-- BOB IA -->
 
+
+    <!--INÍCIO-->
     <div class="conteudo" id="inicio">
-        <h1 class="conteudo-title">Início</h1>
+        <h1 class="conteudo-title" style="color: white;">Início</h1>
+        <h3 class="conteudo-title" style="color: rgb(223, 223, 223);">Olá, Admin aqui está a parte central do seu controle!</h3>
+    
+    <div class="inicio-grid">
+        <div class="card-inicio">
+            <span class="kpi-span">Leads gerados</span>
+            <h1 id="qtd_contatos">-</h1>
+            <span class="subspan">Esse é o número de usuários que enviaram suas informações de contatos</span>
+            <button class="btns-inicio" onclick="alterarConteudo('mensagens')">Ver Mais</button>
+        </div>
+        <div class="card-inicio">
+            <span class="kpi-span">Empresas Cadastradas</span>
+            <h1 id="qtd_empresas">-</h1>
+            <span class="subspan">Quantidade de empresas no nosso sistema, clique abaixo para cadastrar uma nova</span>
+            <button class="btns-inicio" onclick="alterarConteudo('cadastrar_empresa')">Cadastrar</button>
+        </div>
+        <div class="card-inicio" style="background-color: #7b97ec; border: none; gap: 45px;">
+            <h2 style="color: white;">"Congele os problemas e monitore seu sucesso!"</h2>
+            <h3 style="color: white; font-style: italic; align-self: start;">-Frigolog</h3>
+        </div>    
     </div>
+    <div>
+    <section class="section-novidade" onclick="alterarConteudo('bob_ia')">
+        <h1>Novidade!</h1>
+        <h3>Utilize o BobIA como um agente para te auxiliar no sistema, clique nesse card</h3>
+    </section>
+    <section class="section-novidade" onclick="window.location.href='/home/aluno/aplicacao_web/public/assets/docs/ManualDeInstalacao.pdf'">
+        <h1>Manual de Instalação</h1>
+        <h3>Clique aqui para visualizar ou baixar o manual</h3>
+    </section>
+    <section class="section-novidade">
+        <h1>Lembrando...</h1>
+        <h3>Abra o Jira e veja se você tem chamados pendentes</h3>
+    </section>
+    <section class="section-novidade">
+        <h1>Gestão</h1>
+        <h3>Acompanhe a situação dos processos e do projeto no Trello</h3>
+    </section>
+    </div>
+    </div>
+    <!--INICIO-->
 
 
     <div class="conteudo" id="mensagens">
@@ -267,9 +308,9 @@
 
     window.onload = function () {
         carregarMensagens(),
-            carregarEmpresas(),
-            listarUsuarios("")
-
+        carregarEmpresas(),
+        listarUsuarios("")
+        preencherContatos()
     }
 
     function FiltrarUsuariosPorEmpresa() {
@@ -396,8 +437,39 @@
                 <div>${ultimasMensagens[i].codigo_cadastro}</div>
                 </div>`
         }
+
+        // Pegando a quantidade de empresas e adicionando no card do inicio
+        let qtdEmpresas = 0;
+
+        for (let i = 0; i < resposta.length; i++) {
+            qtdEmpresas ++;
+        }
+
+        document.getElementById('qtd_empresas').innerText = qtdEmpresas;
+
     }
 
+    function preencherContatos(){
+
+        fetch('/contatoRoutes/mensagensContatos')
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+
+                        plotarEmpresas(resposta);
+
+                        document.getElementById('qtd_contatos').innerText = resposta.length;
+                    });
+                } else {
+                    console.error('Nenhum dado encontrado ou erro na API');
+                }
+            })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados: ${error.message}`);
+            });
+
+    }
 
     function cadastrar() {
         var razaoSocial = ipt_razao_social.value;
