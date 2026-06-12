@@ -1,0 +1,103 @@
+[33mc9b8377[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m removendo chaves do bob ia
+[33m69d4f8b[m atualizando pastas
+[33m84806c6[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge branch 'main' of https://github.com/FrigoLog/aplicacao_web
+[33mbe226a6[m ajustando .env.dev
+[33m6c89ebe[m adicionando legenda do grafico do detalhe do po
+[33md301fa7[m ajusta estilização do detalhe do PO
+[33mda1031a[m adicionando botao na sidebar na tela de admin
+[33mc1283b8[m adicionando legenda nas kpis e redirecionamento para detalhes
+[33m359fba4[m Arrumando preenchimento dos cards do inicio
+[33mdd5167a[m Adicionado legenda para melhor visualização das métricas
+[33mc0f46c2[m Merge remote-tracking branch 'refs/remotes/origin/main'
+[33md5e964f[m Adicionando funções para preencher os cards do inicio na tela de admin frigolog
+[33m8313e2c[m Ajustes gerais
+[33m6f50419[m Versão estática final da tela de Inicio do admin frigolog
+[33me35d1da[m Merge remote-tracking branch 'refs/remotes/origin/main'
+[33m41efcd5[m Adicionando cards e indicadores na tela de início
+[33m1b84112[m Update leituraModel.js
+[33m01234e0[m Merge remote-tracking branch 'refs/remotes/origin/main'
+[33mfa024ed[m Adicionado gráfico para cada Ponto operacional
+[33m99d7f24[m Ajustando detalhes gerais
+[33mfb47311[m Arrumando CSS e adicionando Função de listar usuarios no ADM-Frigolog.html
+[33m0acccfa[m Arrumando CSS do adm-Frigolog.html
+[33mc310baf[m Arrumando tela de clientes dos admin frigolog
+[33m187c5fd[m Finalizando a Tela de admin-Empresa
+[33md6615cb[m Arrumando a empresas.router
+[33mae98a1c[m Arrumando as Rotas da tela Admin empresa
+[33m14aa707[m Criando rotas para buscar os usuarios
+[33mc8b0b23[m Arrumando rotas da tela Admin Empresa
+[33me1622fb[m Fazendo a Tela de admin Empresa
+[33mf87f9ac[m Adicionando tela de Admin das empresas
+[33mbba9c08[m Adiciona título no link do manual no footer
+[33mcde9a5f[m Adicionado manual de instalação no site
+[33m435e446[m Adicionando central de atendimento no footer
+[33mfc6be51[m Adicionado cores para melhor visualização das metricas nas KPIs
+[33mf59d6fa[m Alterado kpi e grafico da dashboard
+[33me969aaf[m Adicionando função para logout
+[33maf45461[m Alterando a cor da div conteudo
+[33m3474c3e[m Merge remote-tracking branch 'refs/remotes/origin/main'
+[33m432a7b9[m Terminado as KPIs e a dashboard
+[33me0a5f51[m Estilizando a tela de contatos e empresas cadastradas
+[33m6e44178[m Adicionando rota de empresas cadastradas
+[33mbce8d29[m Simplificando renderização de mensagens com loop em contatos
+[33m94d35a0[m Corrigindo caminho fetch do contato
+[33mb774c7d[m Adicionando campos de cep e numero no cadastro da empresa
+[33mb62d089[m Adicionando barra de pesquisa e rotas de alertas para a dashboard
+[33m468dde9[m Adicionando barra de pesquisa para PO e Ambientes
+[33m5d8207e[m Adicionando dia e horario nas mensagens
+[33m33babbb[m Adicionando rota de mensagens de contato
+[33m31284c6[m Estilização da tela de cadastro da empresa e criação das rotas
+[33mfdb18ce[m Atualizando css da página de adm
+[33m660c7c1[m Duplicando página de ADM para desenvolvimento
+[33m1fec8a3[m Adicionando botão na side bar e de voltar
+[33m899e011[m Merge branch 'main' of https://github.com/FrigoLog/aplicacao_web Arrumando probelma de merge
+[33m3467d70[m Adicionando tela de ambientes e ponto operacionais, com infos do banco de dados e redirecionmento
+[33m247b189[m Merge remote-tracking branch 'refs/remotes/origin/main'
+[33m9220263[m Atualizando css pagina contatos
+[33mfddec61[m Feito o redirecionamento para a tela de administrador
+[33ma6253b3[m Adicionando tela de unidades estática
+[33mf190320[m Merge remote-tracking branch 'refs/remotes/origin/main'
+[33m7693843[m Inserindo bob ia
+[33mc5a0a17[m Adicionado o tipo de usuario ao sessionStorage
+[33m23d70a2[m Adicionando funcionalidade de contato com envio de dados ao banco
+[33m2c36b58[m Adicionado o gráfico de não conformidade por ambiente
+[33m1c1aac0[m Adicionando a rota de não conformidade dos ambientes
+[33m44814fc[m Adicionado função para kpi de conformidade do sistema
+[33m37c6694[m Capturando dados para dashboard e adicionando no gráfico
+[33mbc73cef[m Adicionado API do BobIa ao projeto
+[33m2aa81b5[m Adicionando rotas de leituras do sensor, funcionando
+[33m7264ff4[m Adicionando as inicialmente as rotas de leitura do sensor para a dash
+[33m934c513[m Adicionando alterações página adm
+[33m102ced1[m Criando página de adm
+[33me3b5ef8[m Corrigindo controller cadastro empresa
+[33m20bbb78[m Ajustando o controller do cadastro empresa
+[33m5ef6b1a[m Ajustando controller e model do cadastro empresa
+[33me4ccc61[m Adicionado dashboard
+[33mc751741[m Retirando os comentários
+[33m3a34e1a[m Resolve Merge
+[33m174ec03[m Resolvendo os bugs de login e cadastro
+[33ma4ace3b[m Adicionando função de código aleatório
+[33m2e5dc40[m testando o push
+[33m4012ca8[m Merge branch 'main' of https://github.com/FrigoLog/aplicacao_web
+[33m66bcb24[m Corrigindo bugs do cadastro
+[33m2fb379a[m Merge branch 'main' of https://github.com/FrigoLog/aplicacao_web
+[33m2aaf060[m Adicionando função para gerar códigos aleatórios
+[33md46d5fc[m Adicionando página de cadastro de empresa
+[33m77df946[m Adicionando Script do cadastro.html
+[33m3ab0c69[m Adicionando criptografia na Senha
+[33m65efddf[m Adicionando o banco de dados no .env
+[33mc9940eb[m Adicionando o código da usuario.js(Router)
+[33mee82a35[m Adicionado usuario do banco de dados no arquivo de configurações
+[33m2628bbf[m Resolvido problema nas inportações
+[33mc3634c7[m Adicionado index.js nas rotas
+[33m9ee04ad[m Terminando script do login.html
+[33mda5253a[m Arrumando o codigo do sessao.js
+[33mf1f4982[m Adicionando a sessao.js
+[33mc711f59[m Comecando o script do login.html
+[33m05e672d[m Adicionando as rotas da API no app.js
+[33m9cb61be[m Adicionando as imagens das telas
+[33mad08d79[m Adicionando o arquivo.css
+[33ma665aac[m Adicionando as Paginas de Login e Cadastro
+[33m097b897[m Adicionando rotas (API) para Login
+[33md0e5e1f[m adiciona pastas de controllers models e routes
+[33mc170f00[m adiciona web data viz limpa para desenvolvimento do projeto

@@ -98,8 +98,7 @@ function buscarPontoMaisCritico(id_empresa) {
     const instrucaoSql = `
         SELECT *
         FROM vw_ponto_operacional_mais_critico
-        WHERE id_empresa = ${id_empresa}
-        LIMIT 5;
+        WHERE id_empresa = ${id_empresa};
     `;
 
     console.log("Executando a instrução SQL: \n" + instrucaoSql);

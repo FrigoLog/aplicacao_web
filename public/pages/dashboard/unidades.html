@@ -275,6 +275,8 @@
         const resAlertas = await fetch("/leituras/alertas_po/" + id_po);
         const alertas = await resAlertas.json();
 
+        console.log("RES TEMP:" + temperaturas);
+
         renderizarDashPO(temperaturas, alertas);
 
         clearInterval(intervalo);
@@ -293,11 +295,11 @@
     }
 
     function corPorTemperatura(valor, temp_min, temp_max) {
-        if ((valor - temp_max) >= 5 || (temp_min - valor) >= 5) {
+        if ((valor - temp_max) > 3 || (temp_min - valor) > 3) {
             // Critico
             return "#e74c3c";
         }
-        else if (((valor - temp_max) >= 3 || (temp_min - valor) >= 3)) {
+        else if (((valor - temp_max) >= 0 || (temp_min - valor) >= 0)) {
             // Alerta
             return "#f1c40f";
         }
@@ -338,21 +340,30 @@
         document.getElementById('kpi_min_periodo').innerHTML = minPeriodo.toFixed(1) + '°C';
         document.getElementById('kpi_max_periodo').innerHTML = maxPeriodo.toFixed(1) + '°C';
 
-        const kpiMax = document.getElementById('kpi_card_max');
-        if ((maxPeriodo - temp_max) >= 5 || (temp_min - maxPeriodo) >= 5) {
-            kpiMax.className = "kpi-card critico";
-        } else if ((maxPeriodo - temp_max) >= 3 || (temp_min - maxPeriodo) >= 3) {
-            kpiMax.className = "kpi-card alerta";
-        } else {
-            kpiMax.className = "kpi-card otimo";
+        if (corPorTemperatura(maxPeriodo, temp_min, temp_max) == '#e74c3c') {
+            // Critico
+            kpi_card_max.className = "kpi-card critico";
+        }
+        else if (corPorTemperatura(maxPeriodo, temp_min, temp_max) == '#f1c40f') {
+            // Alerta
+            kpi_card_max.className = "kpi-card alerta";
+        }
+        else {
+            // Normal
+            kpi_card_max.className = "kpi-card otimo";
         }
 
         const kpiMin = document.getElementById('kpi_card_min');
-        if ((minPeriodo - temp_max) >= 5 || (temp_min - minPeriodo) >= 5) {
+        if (corPorTemperatura(minPeriodo, temp_min, temp_max) == '#e74c3c') {
+            // Critico
             kpiMin.className = "kpi-card critico";
-        } else if ((minPeriodo - temp_max) >= 3 || (temp_min - minPeriodo) >= 3) {
+        }
+        else if (corPorTemperatura(minPeriodo, temp_min, temp_max) == '#f1c40f') {
+            // Alerta
             kpiMin.className = "kpi-card alerta";
-        } else {
+        }
+        else {
+            // Normal
             kpiMin.className = "kpi-card otimo";
         }
 
@@ -360,17 +371,25 @@
         if (graficoTemperatura != null) {
             graficoTemperatura.data.labels = data_hora;
             graficoTemperatura.data.datasets[0].data = temperaturas;
+            graficoTemperatura.data.datasets[0].pointBackgroundColor = temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max));
+            graficoTemperatura.data.datasets[0].pointBorderColor = temperaturas.map(valor => corPorTemperatura(valor, temp_min, temp_max));
+            graficoTemperatura.data.datasets[0].segment = {
+                borderColor: ctx => {
+                    const proximoValor = ctx.p1.parsed.y;
+                    return corPorTemperatura(proximoValor, temp_min, temp_max);
+                }
+            }
             graficoTemperatura.update();
         }
 
         const ultima_temperatura = temperaturas[temperaturas.length - 1];
         kpi_temperatura_atual.innerHTML = ultima_temperatura + " °C";
 
-        if ((ultima_temperatura - temp_max) >= 3 || (temp_min - ultima_temperatura) >= 3) {
+        if (corPorTemperatura(ultima_temperatura, temp_min, temp_max) == '#e74c3c') {
             // Critico
             kpi_card_temperatura.className = "kpi-card critico";
         }
-        else if (((ultima_temperatura - temp_max) >= 1 || (temp_min - ultima_temperatura) >= 1)) {
+        else if (corPorTemperatura(ultima_temperatura, temp_min, temp_max) == '#f1c40f') {
             // Alerta
             kpi_card_temperatura.className = "kpi-card alerta";
         }

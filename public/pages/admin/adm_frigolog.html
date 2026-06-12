@@ -353,7 +353,6 @@
 
 
     function carregarMensagens() {
-
         fetch('/contatoRoutes/mensagensContatos')
             .then(function (response) {
                 if (response.ok) {
@@ -385,28 +384,24 @@
 
         for (let i = 0; i < ultimasMensagens.length; i++) {
             mensagens_mostradas.innerHTML += `
-        <div class="posicao-mensagens">
-        <div class="inicio-mensagens">
-        <div>${ultimasMensagens[i].nome_empresa}</div>
+            <div class="posicao-mensagens">
+            <div class="inicio-mensagens">
+                <div>${ultimasMensagens[i].nome_empresa}</div>
                 <div>${ultimasMensagens[i].email}</div>
                 <div>${ultimasMensagens[i].telefone}</div>
                 <div>${ultimasMensagens[i].data_mensagem}</div>
-                </div>`
+            </div>`
         }
     }
 
     // Empresas cadastradas
-
     function carregarEmpresas() {
-
         fetch('/empresas/empresasCadastradas')
             .then(function (response) {
                 if (response.ok) {
                     response.json().then(function (resposta) {
-                        console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
-
+                        console.log(`Dados recebidos EMPRESASS: ${JSON.stringify(resposta)}`);
                         plotarEmpresas(resposta);
-
                     });
                 } else {
                     console.error('Nenhum dado encontrado ou erro na API');
@@ -418,46 +413,30 @@
     }
 
     function plotarEmpresas(resposta) {
-
         console.log(resposta)
 
-        var ultimasMensagens = []
-        for (i = 0; i < resposta.length; i++) {
-            ultimasMensagens.push(resposta[i]);
-        }
-        console.log(ultimasMensagens);
-
-
-        for (let i = 0; i < ultimasMensagens.length; i++) {
+        for (let i = 0; i < resposta.length; i++) {
             empresasCadastradas.innerHTML += `
         <div class="posicao-mensagens">
         <div class="inicio-mensagens">
-                <div>${ultimasMensagens[i].razao_social}</div>
-                <div>${ultimasMensagens[i].cnpj}</div>
-                <div>${ultimasMensagens[i].codigo_cadastro}</div>
+                <div>${resposta[i].razao_social}</div>
+                <div>${resposta[i].cnpj}</div>
+                <div>${resposta[i].codigo_cadastro}</div>
                 </div>`
         }
 
-        // Pegando a quantidade de empresas e adicionando no card do inicio
-        let qtdEmpresas = 0;
-
-        for (let i = 0; i < resposta.length; i++) {
-            qtdEmpresas ++;
-        }
-
-        document.getElementById('qtd_empresas').innerText = qtdEmpresas;
+        document.getElementById('qtd_empresas').innerText = resposta.length;
 
     }
 
     function preencherContatos(){
-
         fetch('/contatoRoutes/mensagensContatos')
             .then(function (response) {
                 if (response.ok) {
                     response.json().then(function (resposta) {
                         console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
 
-                        plotarEmpresas(resposta);
+                        // plotarMensagens(resposta);
 
                         document.getElementById('qtd_contatos').innerText = resposta.length;
                     });

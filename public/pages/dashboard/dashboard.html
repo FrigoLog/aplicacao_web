@@ -189,7 +189,11 @@
 
     let poMaisCritico = null;
     function irParaPontoCritico() {
-        window.location.href = `unidades.html?ambiente=${poMaisCritico.id_ambiente}&po=${poMaisCritico.id_ponto_operacional}`;
+        if (poMaisCritico == null) {
+             window.location.href = `unidades.html`;
+        } else {
+            window.location.href = `unidades.html?ambiente=${poMaisCritico.id_ambiente}&po=${poMaisCritico.id_ponto_operacional}`;
+        }
     }
 
     // Obtem a conformidade do sistema
@@ -295,6 +299,14 @@
 
         if (graficoConformidade != null) {
             graficoConformidade.data.datasets[0].data = conformidades;
+            graficoConformidade.data.datasets[0].pointBackgroundColor = conformidades.map(valor => corPorConformidade(valor));
+            graficoConformidade.data.datasets[0].pointBorderColor = conformidades.map(valor => corPorConformidade(valor));
+            graficoConformidade.data.datasets[0].segment = {
+                borderColor: ctx => {
+                    const proximoValor = ctx.p1.parsed.y;
+                    return corPorConformidade(proximoValor);
+                }
+            }
             graficoConformidade.update();
         }
         else {
@@ -512,8 +524,15 @@
     async function kpiPontosCriticos() {
 
         const pontosCriticos = await obterPontoMaisCritico();
+        let pontosCriticosFiltrados = [];
 
-        const quantidade = pontosCriticos.length;
+        for (let i = 0; i < pontosCriticos.length; i++) {
+            if (pontosCriticos[i].status_operacional == 'CRITICO') {
+                pontosCriticosFiltrados.push(pontosCriticos[i]);
+            }
+        }
+
+        const quantidade = pontosCriticosFiltrados.length;
 
         kpi_pontos_criticos.innerHTML = quantidade;
 
@@ -521,17 +540,21 @@
 
         const limite = quantidade >= 3 ? 3 : quantidade;
 
-        for (let i = 0; i < limite; i++) {
+        if (pontosCriticosFiltrados.length > 0) {
+            for (let i = 0; i < limite; i++) {
 
-            kpi_top_criticos.innerHTML += `
-            <a
-                href="unidades.html?ambiente=${pontosCriticos[i].id_ambiente}&po=${pontosCriticos[i].id_ponto_operacional}"
-                class="link-po-critico"
-            >
-                ${pontosCriticos[i].nome_ambiente} → ${pontosCriticos[i].ponto_operacional}
-            </a>
-            <br>
-        `;
+                kpi_top_criticos.innerHTML += `
+                <a
+                    href="unidades.html?ambiente=${pontosCriticosFiltrados[i].id_ambiente}&po=${pontosCriticosFiltrados[i].id_ponto_operacional}"
+                    class="link-po-critico"
+                >
+                    ${pontosCriticosFiltrados[i].nome_ambiente} → ${pontosCriticosFiltrados[i].ponto_operacional}
+                </a>
+                <br>
+                `;
+            }
+        } else {
+            kpi_top_criticos.innerHTML = "Nenhum ponto operacional critico!"
         }
 
         if (quantidade < 3) {
@@ -576,16 +599,27 @@
 
         const dados = await obterPontoMaisCritico();
 
-        if (dados.length === 0) {
+        let pontosCriticosFiltrados = [];
+
+        for (let i = 0; i < dados.length; i++) {
+            if (dados[i].status_operacional == 'CRITICO') {
+                pontosCriticosFiltrados.push(dados[i]);
+            }
+        }
+
+        if (pontosCriticosFiltrados.length <= 0) {
+            kpi_po_mais_critico.innerHTML = "Nenhum ponto operacional em estado critico!";
+            kpi_diferenca_critica.innerHTML = "-";
+            kpi_card_po_critico.className = "kpi-card otimo";
             return;
         }
 
-        poMaisCritico = dados[0];
+        poMaisCritico = pontosCriticosFiltrados[0];
 
-        const diferenca = dados[0].diferenca;
+        const diferenca = pontosCriticosFiltrados[0].diferenca;
 
         kpi_po_mais_critico.innerHTML =
-            `${dados[0].ponto_operacional}`;
+            `${pontosCriticosFiltrados[0].ponto_operacional}`;
 
         kpi_diferenca_critica.innerHTML =
             `${diferenca}°C fora da faixa`;
